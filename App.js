@@ -1,11 +1,12 @@
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
-import { Colors } from './src/Colors.js';
 
 import IntroScreen from './src/components/screens/IntroScreen';
+import HomeScreen from './src/components/screens/HomeScreen';
 
 const Navigator = StackNavigator({
   Intro: { screen: IntroScreen },
+  Home: { screen: HomeScreen },
 }, {
   headerMode: 'none',
 });

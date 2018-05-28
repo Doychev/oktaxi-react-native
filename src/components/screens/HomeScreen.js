@@ -10,10 +10,10 @@ export default class HomeScreen extends React.Component {
     super(props);
     this.state = {
       mapRegion: {
-        latitude: 42,
-        longitude: 37,
-        latitudeDelta: 20,
-        longitudeDelta: 20,
+        latitude: 42.69751,
+        longitude: 23.32415,
+        latitudeDelta: 0.12,
+        longitudeDelta: 0.12,
       },
     };
     this.onRegionChange = this.onRegionChange.bind(this);
@@ -58,6 +58,8 @@ const styles = StyleSheet.create({
   },
   mapStyle: {
     flex: 1,
+    width: '100%',
+    height: '100%',
   },
 
 });

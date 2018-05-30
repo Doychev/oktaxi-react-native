@@ -39,6 +39,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		9D197D07B73AEA49CBC72122 /* libPods-OKTaxi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFC165427C7B789ACD0C84D /* libPods-OKTaxi.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		FC5FEA0220C00B5800CCFC24 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC5FEA0020C00B5800CCFC24 /* libReactNativePermissions.a */; };
 		FC87CF3820BE87E7009DE111 /* libRNGeocoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FC87CF3720BE87E7009DE111 /* libRNGeocoder.a */; };
 /* End PBXBuildFile section */
 
@@ -316,6 +317,13 @@
 			remoteGlobalIDString = 358F4ED71D1E81A9004DF814;
 			remoteInfo = RCTBlob;
 		};
+		FC5FE9FF20C00B5800CCFC24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FC5FE9D620C00B5800CCFC24 /* ReactNativePermissions.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9D23B34F1C767B80008B4819;
+			remoteInfo = ReactNativePermissions;
+		};
 		FC87CF3620BE87E7009DE111 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FC87CF0D20BE87E7009DE111 /* RNGeocoder.xcodeproj */;
@@ -355,6 +363,7 @@
 		91DAFFD9AD661D8B1C857751 /* Pods-OKTaxi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OKTaxi.release.xcconfig"; path = "Pods/Target Support Files/Pods-OKTaxi/Pods-OKTaxi.release.xcconfig"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		CEFC165427C7B789ACD0C84D /* libPods-OKTaxi.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OKTaxi.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC5FE9D620C00B5800CCFC24 /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		FC87CF0D20BE87E7009DE111 /* RNGeocoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGeocoder.xcodeproj; path = "../node_modules/react-native-geocoder/ios/RNGeocoder.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -386,6 +395,7 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				9D197D07B73AEA49CBC72122 /* libPods-OKTaxi.a in Frameworks */,
 				FC87CF3820BE87E7009DE111 /* libRNGeocoder.a in Frameworks */,
+				FC5FEA0220C00B5800CCFC24 /* libReactNativePermissions.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -570,6 +580,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				FC5FE9D620C00B5800CCFC24 /* ReactNativePermissions.xcodeproj */,
 				FC87CF0D20BE87E7009DE111 /* RNGeocoder.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -627,6 +638,14 @@
 			children = (
 				ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */,
 				2D16E6721FA4F8DC00B85C8A /* libRCTBlob-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FC5FE9D720C00B5800CCFC24 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FC5FEA0020C00B5800CCFC24 /* libReactNativePermissions.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -802,6 +821,10 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = FC5FE9D720C00B5800CCFC24 /* Products */;
+					ProjectRef = FC5FE9D620C00B5800CCFC24 /* ReactNativePermissions.xcodeproj */;
 				},
 				{
 					ProductGroup = FC87CF0E20BE87E7009DE111 /* Products */;
@@ -1076,6 +1099,13 @@
 			fileType = archive.ar;
 			path = libRCTBlob.a;
 			remoteRef = ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FC5FEA0020C00B5800CCFC24 /* libReactNativePermissions.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativePermissions.a;
+			remoteRef = FC5FE9FF20C00B5800CCFC24 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FC87CF3720BE87E7009DE111 /* libRNGeocoder.a */ = {

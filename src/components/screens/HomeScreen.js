@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image } from 'reac
 import { Colors } from '../../Colors.js';
 import MapView from 'react-native-maps';
 import Toolbar from '../elements/Toolbar';
+import Permissions from 'react-native-permissions';
 import Geocoder from 'react-native-geocoder';
 // Geocoder.fallbackToGoogle(Constants.GOOGLE_MAPS_API_KEY);
 
@@ -56,7 +57,32 @@ export default class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    //check for permissions and gps availability
+    this.checkLocationPermission().then( status => {
+      if (status === 'authorized') {
+        //we already have it
+      } else {
+        this.getLocationPermission().then( status => {
+          if (status === 'authorized') {
+            //allowed
+            //get location and move marker there
+          } else {
+            //rejected
+            //show block screen
+          }
+        });
+      }
+    });
+  }
+
+  async checkLocationPermission() {
+    var status = await Permissions.check('location');
+    // Response is one of: 'authorized', 'denied', 'restricted', or 'undetermined'
+    return status;
+  }
+
+  async getLocationPermission() {
+    const status = await Permissions.request('location');
+    return status;
   }
 
   onPressMap = (event) => {

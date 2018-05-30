@@ -10,6 +10,7 @@
     "react": "16.3.1",
     "react-native": "0.55.4",
     "react-native-fetch-polyfill": "^1.1.2",
+    "react-native-geocoder": "^0.5.0",
     "react-native-i18n": "^2.0.12",
     "react-native-maps": "^0.21.0",
     "react-native-permissions": "^1.1.1",

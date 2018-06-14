@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground } 
 import { Colors } from '../../Colors.js';
 import { NavigationUtils } from '../../util/NavigationUtils';
 
+import { strings } from '../../../locales/i18n';
+
 export default class IntroScreen extends React.Component {
   static navigationOptions = { title: 'Intro', header: null };
 
@@ -26,19 +28,19 @@ export default class IntroScreen extends React.Component {
     return (
       <ImageBackground style={styles.container} resizeMode='stretch' source={require('../../images/taxi3.png')}>
         <View style={styles.top}>
-          <Text style={styles.line1}>Log in to the mobile app of</Text>
-          <Text style={styles.line2}>OK SUPERTRANS</Text>
+          <Text style={styles.line1}>{strings('content.login_top')}</Text>
+          <Text style={styles.line2}>{strings('content.company_name')}</Text>
         </View>
         <View style={styles.input}>
           <TextInput/>
           <TextInput/>
           <TouchableOpacity style={styles.loginButton} onPress={this.onPressLogin}>
-            <Text style={styles.buttonText}>LOGIN</Text>
+            <Text style={styles.buttonText}>{strings('content.login')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.bottom}>
-          <Text style={styles.link}>Registration</Text>
-          <Text style={styles.link}>Forgotten password</Text>
+          <Text style={styles.link}>{strings('content.signin')}</Text>
+          <Text style={styles.link}>{strings('content.forgotten_password_link')}</Text>
         </View>
       </ImageBackground>
     );

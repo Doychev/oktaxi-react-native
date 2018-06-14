@@ -7,6 +7,8 @@ import Permissions from 'react-native-permissions';
 import Geocoder from 'react-native-geocoder';
 // Geocoder.fallbackToGoogle(Constants.GOOGLE_MAPS_API_KEY);
 
+import { strings } from '../../../locales/i18n';
+
 export default class HomeScreen extends React.Component {
   static navigationOptions = { title: 'Home', header: null };
 
@@ -21,6 +23,7 @@ export default class HomeScreen extends React.Component {
       },
       toolsVisible: true,
       currentLocation: '',
+      currentStep: 1,
     };
     this.onRegionChange = this.onRegionChange.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
@@ -89,11 +92,36 @@ export default class HomeScreen extends React.Component {
 
   }
 
+  onPressPickUpLocation = () => {
+    this.setState({
+      pickUpLocationDescription: this.state.currentLocation,
+      pickUpLocationLatitude: this.state.mapRegion.latitude,
+      pickUpLocationLongitude: this.state.mapRegion.longitude,
+      currentStep: 2,
+    });
+  }
+
+  onPressDestination = () => {
+    this.props.navigation.navigate('OrderTaxi', {
+      pickUpLocationDescription: this.state.pickUpLocationDescription,
+      pickUpLocationLatitude: this.state.pickUpLocationLatitude,
+      pickUpLocationLongitude: this.state.pickUpLocationLongitude,
+      dropOffLocationDescription: this.state.currentLocation,
+      dropOffLocationLatitude: this.state.mapRegion.latitude,
+      dropOffLocationLongitude: this.state.mapRegion.longitude,
+    });
+  }
+
+  customBackButtonAction = () => {
+    this.setState({
+      currentStep: this.state.currentStep - 1,
+    });
+  }
 
   render() {
     return (
       <View style={styles.container}>
-        <Toolbar title={"OK TAXI 9732121"} navigation={this.props.navigation}/>
+        <Toolbar customBackButtonAction={this.customBackButtonAction} showBackButton={this.state.currentStep > 1} title={strings('content.app_title')} navigation={this.props.navigation}/>
         <MapView
           ref={ref => { this.map = ref; }}
           onPress={e => this.onPressMap(e.nativeEvent)}
@@ -109,16 +137,24 @@ export default class HomeScreen extends React.Component {
           : null
         }
         {
-          this.state.toolsVisible ?
-          <View style={styles.pickUpLocation}>
+          this.state.toolsVisible && this.state.currentStep == 1 ?
+          <TouchableOpacity onPress={this.onPressPickUpLocation} style={styles.pickUpLocation}>
             <Image style={styles.pickUpImage} resizeMode='contain' source={require('../../images/pickuplocation.png')}/>
-            <Text style={styles.pickUpText}>PICK-UP LOCATION</Text>
-          </View>
+            <Text style={styles.pickUpText}>{strings('content.take_me_from_here')}</Text>
+          </TouchableOpacity>
           : null
         }
         <View style={styles.dot}>
           <View style={styles.dotShadow} />
         </View>
+        {
+          this.state.toolsVisible && this.state.currentStep == 2 ?
+          <TouchableOpacity onPress={this.onPressDestination} style={styles.destination}>
+            <Image style={styles.pickUpImage} resizeMode='contain' source={require('../../images/destination.png')}/>
+            <Text style={styles.destinationText}>{strings('content.destination')}</Text>
+          </TouchableOpacity>
+          : null
+        }
       </View>
     );
   }
@@ -149,6 +185,13 @@ const styles = StyleSheet.create({
     shadowColor: Colors.BLACK,
     shadowOffset: { height: 5, width: 0},
   },
+  destination: {
+    position: 'absolute',
+    top: '52%',
+    width: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   pickUpLocation: {
     position: 'absolute',
     top: '39%',
@@ -164,6 +207,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: '30%',
     top: '30%',
+    left: '20%',
+    right: '20%',
+    color: Colors.WHITE,
+    fontSize: 18,
+    fontWeight: 'bold',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  destinationText: {
+    position: 'absolute',
+    bottom: '30%',
+    top: '40%',
     left: '20%',
     right: '20%',
     color: Colors.WHITE,

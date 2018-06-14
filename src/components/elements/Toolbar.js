@@ -47,6 +47,7 @@ export default class Toolbar extends React.Component {
         {
           this.props.showBackButton ?
           <TouchableOpacity style={styles.backButton} onPress={this.onPressBack}>
+            <Image style={styles.backIcon} tintColor={Colors.WHITE} resizeMode='contain' source={require('../../images/arrow_left_black.png')}/>
           </TouchableOpacity>
           :
           null
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     height: 60,
-    backgroundColor: Colors.YELLOW,
+    backgroundColor: Colors.ORANGE,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'stretch',
@@ -80,8 +81,8 @@ const styles = StyleSheet.create({
     left: 20,
   },
   backIcon: {
-    // height: Constants.TOOLBAR_HEIGHT - 47,
-    // width: Constants.TOOLBAR_HEIGHT - 47,
+    height: 15,
+    width: 15,
   },
   extraActionButton: {
     position: 'absolute',

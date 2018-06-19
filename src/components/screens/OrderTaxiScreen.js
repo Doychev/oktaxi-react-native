@@ -1,8 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image, AsyncStorage } from 'react-native';
 import { Colors } from '../../Colors.js';
+import { Constants } from '../../Constants.js';
 import Toolbar from '../elements/Toolbar';
 import CheckBox from 'react-native-checkbox';
+import { NetworkUtils } from '../../util/NetworkUtils.js';
 
 import { strings } from '../../../locales/i18n';
 
@@ -17,11 +19,25 @@ export default class OrderTaxiScreen extends React.Component {
       voucherChecked: false,
       deferredChecked: false,
       pickUpAddress: this.props.navigation.state.params.pickUpLocationDescription,
+      pickUpLocationLatitude: this.props.navigation.state.params.pickUpLocationLatitude,
+      pickUpLocationLongitude: this.props.navigation.state.params.pickUpLocationLongitude,
       dropOffAddress: this.props.navigation.state.params.dropOffLocationDescription,
+      dropOffLocationLatitude: this.props.navigation.state.params.dropOffLocationLatitude,
+      dropOffLocationLongitude: this.props.navigation.state.params.dropOffLocationLongitude,
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const encodedUser = await AsyncStorage.getItem(Constants.ASYNC_STORE_ENCODED_USER);
+    this.setState({
+      encodedUser: encodedUser,
+    });
+
+    const username = await AsyncStorage.getItem(Constants.ASYNC_STORE_USERNAME);
+    this.setState({
+      username: username,
+    });
+
 
   }
 
@@ -47,6 +63,56 @@ export default class OrderTaxiScreen extends React.Component {
     this.setState({
       deferredChecked: !this.state.deferredChecked,
     });
+  }
+
+  onPressOrder = async () => {
+
+    let response = await NetworkUtils.fetch(
+       Constants.BASE_URL + "order", {
+        method: 'POST',
+        headers: {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json',
+          'Authorization' : 'Basic ' + this.state.encodedUser,
+        },
+        body: JSON.stringify({
+          "startAddress": {
+        		"id": 0,
+        		"latitude": this.state.pickUpLocationLatitude,
+        		"longitude": this.state.pickUpLocationLongitude,
+        		"text": this.state.pickUpAddress,
+        	},
+        	"endAddress": {
+        		"id": 0,
+            "latitude": this.state.dropOffLocationLatitude,
+        		"longitude": this.state.dropOffLocationLongitude,
+        		"text": this.state.dropOffAddress,
+        	},
+          "phoneNumber": this.state.username,
+          "remark": this.state.remarks,
+        	"luggage": this.state.luggageChecked ? 1 : 0,
+        	"pos": this.state.posChecked ? 1 : 0,
+          "voucherPayment": this.state.voucherChecked ? 1 : 0,
+          "voucherCode": this.state.voucherNumber,
+          "fixedStart": this.state.deferredChecked ? 1 : 0,
+          // "fixedStartDate": "2018-06-12 17:30:49",
+          "fixedStartDate": "",
+          "status": 0,
+        }),
+      }
+    );
+    if (!response.ok) {
+      //SHOW ERROR
+      this.setState({
+        remarks: JSON.stringify(response),
+      });
+    } else {
+      this.setState({
+        remarks: JSON.stringify(response),
+      });
+      // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
+      // this.props.navigation.navigate('Home');
+    }
   }
 
   render() {

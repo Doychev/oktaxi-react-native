@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image, AsyncStorage, ActivityIndicator } from 'react-native';
 import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
 import Toolbar from '../elements/Toolbar';
@@ -24,7 +24,7 @@ export default class OrderTaxiResultScreen extends React.Component {
     var response = this.props.navigation.state.params.response;
     var responseJson = await response.json();
     this.setState({
-      feedback: JSON.stringify(responseJson),
+      orderId: responseJson.id,
     });
 
     const encodedUser = await AsyncStorage.getItem(Constants.ASYNC_STORE_ENCODED_USER);
@@ -36,6 +36,10 @@ export default class OrderTaxiResultScreen extends React.Component {
     this.setState({
       username: username,
     });
+  }
+
+  onPressCancel = () => {
+    this.props.navigation.navigate('Home');
   }
 
   showSpinner() {
@@ -52,16 +56,12 @@ export default class OrderTaxiResultScreen extends React.Component {
         <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
         <Toolbar title={strings('content.activity_title_confirm')} navigation={this.props.navigation}/>
         <View style={styles.content}>
-          <View style={styles.feedback}>
-            <Image style={styles.feedbackIcon} resizeMode='contain'
-              source={require('../../images/icons/baseline_description_black.png')}/>
-            <Text style={styles.feedbackText}>{this.state.feedback}</Text>
+          <View style={styles.loadingBox}>
+            <Text style={styles.loadingText}>{strings('content.order_taxi_searching')}{this.state.orderId}{strings('content.order_taxi_searching_2')}</Text>
           </View>
-          <TouchableOpacity style={styles.button} onPress={this.onPressNewSearch}>
-            <Text style={styles.buttonText}>{strings('content.new_search')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={this.onPressNewOrder}>
-            <Text style={styles.buttonText}>{strings('content.new_order')}</Text>
+          <ActivityIndicator size='large' color={Colors.ORANGE} style={styles.activityIndicator}/>
+          <TouchableOpacity style={styles.button} onPress={this.onPressCancel}>
+            <Text style={styles.buttonText}>{strings('content.cancel')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -69,6 +69,20 @@ export default class OrderTaxiResultScreen extends React.Component {
   }
 
 }
+
+/*
+<View style={styles.feedback}>
+  <Image style={styles.feedbackIcon} resizeMode='contain'
+    source={require('../../images/icons/baseline_description_black.png')}/>
+  <Text style={styles.feedbackText}>{this.state.feedback}</Text>
+</View>
+<TouchableOpacity style={styles.button} onPress={this.onPressNewSearch}>
+  <Text style={styles.buttonText}>{strings('content.new_search')}</Text>
+</TouchableOpacity>
+<TouchableOpacity style={styles.button} onPress={this.onPressNewOrder}>
+  <Text style={styles.buttonText}>{strings('content.new_order')}</Text>
+</TouchableOpacity>
+*/
 
 const styles = StyleSheet.create({
   container: {
@@ -81,6 +95,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'stretch',
+  },
+  activityIndicator: {
+    flex: 1,
+    transform: [
+      { scale: 3.5, }
+    ],
+  },
+  loadingBox: {
+    marginTop: 100,
+    marginLeft: 10,
+    marginRight: 10,
+    backgroundColor: Colors.WHITE,
+    paddingTop: 10,
+    paddingBottom: 10,
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowColor: Colors.BLACK,
+    shadowOffset: { height: 5, width: 0},
   },
   feedback: {
     height: 145,

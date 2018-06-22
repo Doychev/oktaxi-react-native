@@ -8,15 +8,14 @@ import { NetworkUtils } from '../../util/NetworkUtils.js';
 let base64 = require('base-64');
 import Spinner from 'react-native-loading-spinner-overlay';
 
-export default class IntroScreen extends React.Component {
-  static navigationOptions = { title: 'Intro', header: null };
+export default class ForgottenPasswordScreen extends React.Component {
+  static navigationOptions = { title: 'ForgottenPassword', header: null };
 
   constructor(props) {
     super(props);
     this.state = {
       spinnerVisible : false,
       username: '',
-      password: '',
     };
   }
 
@@ -24,40 +23,36 @@ export default class IntroScreen extends React.Component {
 
   }
 
-  onPressLogin = async () => {
-    if (this.state.username.length > 0 && this.state.password.length > 0) {
-      this.showSpinner();
-      var encodedUser = base64.encode(this.state.username + ':' + this.state.password);
-      await AsyncStorage.setItem(Constants.ASYNC_STORE_ENCODED_USER, encodedUser);
-      await AsyncStorage.setItem(Constants.ASYNC_STORE_USERNAME, this.state.username);
-
-      let response = await NetworkUtils.fetch(
-         Constants.BASE_URL + "user/status", {
-          method: 'GET',
-          headers: {
-            'Accept' : 'application/json',
-            'Content-Type' : 'application/json',
-            'Authorization' : 'Basic ' + encodedUser,
-          },
-        }
-      );
-      if (!response.ok) {
-        this.hideSpinner();
-        //SHOW ERROR
-      } else {
-        this.hideSpinner();
-        // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
-        this.props.navigation.navigate('Home');
-      }
+  onPressGo = async () => {
+    if (this.state.username.length > 0) {
+      // this.showSpinner();
+      // var encodedUser = base64.encode(this.state.username + ':' + this.state.password);
+      // await AsyncStorage.setItem(Constants.ASYNC_STORE_ENCODED_USER, encodedUser);
+      // await AsyncStorage.setItem(Constants.ASYNC_STORE_USERNAME, this.state.username);
+      //
+      // let response = await NetworkUtils.fetch(
+      //    Constants.BASE_URL + "user/status", {
+      //     method: 'GET',
+      //     headers: {
+      //       'Accept' : 'application/json',
+      //       'Content-Type' : 'application/json',
+      //       'Authorization' : 'Basic ' + encodedUser,
+      //     },
+      //   }
+      // );
+      // if (!response.ok) {
+      //   this.hideSpinner();
+      //   //SHOW ERROR
+      // } else {
+      //   this.hideSpinner();
+      //   // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
+      //   this.props.navigation.navigate('Home');
+      // }
     }
   }
 
-  onPressRegistration = () => {
-    this.props.navigation.navigate('Registration');
-  }
-
-  onPressForgotPassword = () => {
-    this.props.navigation.navigate('ForgottenPassword');
+  onPressLogin = () => {
+    this.props.navigation.navigate('Intro');
   }
 
   showSpinner() {
@@ -73,8 +68,9 @@ export default class IntroScreen extends React.Component {
       <ImageBackground style={styles.container} resizeMode='stretch' source={require('../../images/taxi3.png')}>
         <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
         <View style={styles.top}>
-          <Text style={styles.line1}>{strings('content.login_top')}</Text>
+          <Text style={styles.line1}>{strings('content.fogotten_password_top')}</Text>
           <Text style={styles.line2}>{strings('content.company_name')}</Text>
+          <Text style={styles.line1}>{strings('content.fogotten_password_top_2')}</Text>
         </View>
         <View style={styles.inputSection}>
           <View style={styles.input}>
@@ -84,28 +80,15 @@ export default class IntroScreen extends React.Component {
               onChangeText={(value) => this.setState({username: value})}
               returnKeyType='next' autoCapitalize = 'none'
               ref='usernameField'
-              onSubmitEditing={(event) => { this.refs.passwordField.focus(); }}
               placeholder={strings('content.phone')} placeholderTextColor={Colors.GRAY} />
           </View>
-          <View style={styles.input}>
-            <Image style={styles.inputIcon} resizeMode='contain'
-              source={require('../../images/icons/baseline_security_black.png')}/>
-            <TextInput style={styles.inputText} value={this.state.password}
-              onChangeText={(value) => this.setState({password: value})}
-              returnKeyType='next' autoCapitalize = 'none'
-              ref='passwordField' secureTextEntry={true}
-              placeholder={strings('content.password')} placeholderTextColor={Colors.GRAY} />
-          </View>
-          <TouchableOpacity style={styles.loginButton} onPress={this.onPressLogin}>
-            <Text style={styles.buttonText}>{strings('content.login')}</Text>
+          <TouchableOpacity style={styles.loginButton} onPress={this.onPressGo}>
+            <Text style={styles.buttonText}>{strings('content.go')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.bottom}>
-          <TouchableOpacity onPress={this.onPressRegistration}>
-            <Text style={styles.link}>{strings('content.signin')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.onPressForgotPassword}>
-            <Text style={styles.link}>{strings('content.forgotten_password_link')}</Text>
+          <TouchableOpacity onPress={this.onPressLogin}>
+            <Text style={styles.link}>{strings('content.if_you_have_account')}</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
@@ -156,11 +139,12 @@ const styles = StyleSheet.create({
     flex: 2,
     alignSelf: 'stretch',
     justifyContent: 'center',
+    alignItems: 'center',
     marginLeft: 20,
   },
   line1: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 14,
     color: Colors.WHITE,
     margin: 5,
   },

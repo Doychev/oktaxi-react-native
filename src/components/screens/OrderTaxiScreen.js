@@ -5,6 +5,7 @@ import { Constants } from '../../Constants.js';
 import Toolbar from '../elements/Toolbar';
 import CheckBox from 'react-native-checkbox';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import { strings } from '../../../locales/i18n';
 
@@ -14,6 +15,7 @@ export default class OrderTaxiScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      spinnerVisible : false,
       luggageChecked: false,
       posChecked: false,
       voucherChecked: false,
@@ -66,7 +68,7 @@ export default class OrderTaxiScreen extends React.Component {
   }
 
   onPressOrder = async () => {
-
+    this.showSpinner();
     let response = await NetworkUtils.fetch(
        Constants.BASE_URL + "order", {
         method: 'POST',
@@ -102,27 +104,31 @@ export default class OrderTaxiScreen extends React.Component {
       }
     );
     if (!response.ok) {
+      this.hideSpinner();
       //SHOW ERROR
-      this.setState({
-        remarks: JSON.stringify(response),
-      });
     } else {
-      this.setState({
-        remarks: JSON.stringify(response),
-      });
-      // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
-      // this.props.navigation.navigate('Home');
+      this.hideSpinner();
+      this.props.navigation.navigate('OrderTaxiResult', {response: response});
     }
+  }
+
+  showSpinner() {
+    this.setState({ spinnerVisible : true});
+  }
+
+  hideSpinner() {
+    this.setState({ spinnerVisible : false});
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
         <Toolbar showBackButton={true} title={strings('content.activity_title_confirm')} navigation={this.props.navigation}/>
         <View style={styles.content}>
           <View style={styles.inputSection}>
             <View style={styles.input}>
-              <Image style={styles.inputIcon} resizeMode='contain' tintColor={Colors.ORANGE}
+              <Image style={styles.inputIcon} resizeMode='contain'
                 source={require('../../images/icons/baseline_person_pin_circle_black.png')}/>
               <TextInput style={styles.inputText} value={this.state.pickUpAddress}
                 onChangeText={(value) => this.setState({pickUpAddress: value})}
@@ -131,7 +137,7 @@ export default class OrderTaxiScreen extends React.Component {
                 onSubmitEditing={(event) => { this.refs.dropOffAddressField.focus(); }} />
             </View>
             <View style={styles.input}>
-              <Image style={styles.inputIcon} resizeMode='contain' tintColor={Colors.ORANGE}
+              <Image style={styles.inputIcon} resizeMode='contain'
                 source={require('../../images/icons/baseline_place_black.png')}/>
               <TextInput style={styles.inputText} value={this.state.dropOffAddress}
                 onChangeText={(value) => this.setState({dropOffAddress: value})}
@@ -140,7 +146,7 @@ export default class OrderTaxiScreen extends React.Component {
                 onSubmitEditing={(event) => { this.refs.remarksField.focus(); }}/>
             </View>
             <View style={styles.input}>
-              <Image style={styles.inputIcon} resizeMode='contain' tintColor={Colors.ORANGE}
+              <Image style={styles.inputIcon} resizeMode='contain'
                 source={require('../../images/icons/baseline_description_black.png')}/>
               <TextInput style={styles.inputText} value={this.state.remarks}
                 onChangeText={(value) => this.setState({remarks: value})}
@@ -208,6 +214,7 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     marginRight: 20,
+    tintColor: Colors.ORANGE,
   },
   inputText: {
     width: '80%',

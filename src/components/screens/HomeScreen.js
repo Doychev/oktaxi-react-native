@@ -18,8 +18,8 @@ export default class HomeScreen extends React.Component {
       mapRegion: {
         latitude: 42.69751,
         longitude: 23.32415,
-        latitudeDelta: 0.12,
-        longitudeDelta: 0.12,
+        latitudeDelta: 0.012,
+        longitudeDelta: 0.012,
       },
       toolsVisible: true,
       currentLocation: '',
@@ -59,22 +59,43 @@ export default class HomeScreen extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.checkLocationPermission().then( status => {
-      if (status === 'authorized') {
-        //we already have it
-      } else {
-        this.getLocationPermission().then( status => {
-          if (status === 'authorized') {
-            //allowed
-            //get location and move marker there
-          } else {
-            //rejected
-            //show block screen
-          }
+  async componentDidMount() {
+    // this.checkLocationPermission().then( status => {
+    //   if (status === 'authorized') {
+    //     this.getUserLocation();
+    //   } else {
+    //     this.getLocationPermission().then( status => {
+    //       if (status === 'authorized') {
+    //         this.getUserLocation();
+    //       } else {
+    //         //rejected
+    //         //show block screen
+    //       }
+    //     });
+    //   }
+    // });
+    this.getUserLocation();
+    // this.getUserLocation();
+
+  }
+
+  async getUserLocation() {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        this.setState({
+          mapRegion: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.12,
+            longitudeDelta: 0.12,
+          },
         });
-      }
-    });
+      },
+      (error) => {
+        //fail silently
+      },
+      { timeout: 15000 },
+    );
   }
 
   async checkLocationPermission() {
@@ -126,7 +147,7 @@ export default class HomeScreen extends React.Component {
           ref={ref => { this.map = ref; }}
           onPress={e => this.onPressMap(e.nativeEvent)}
           style={styles.mapStyle}
-          initialRegion={this.state.mapRegion}
+          region={this.state.mapRegion}
           onRegionChange={this.onRegionChange}
           onRegionChangeComplete={this.onRegionChangeComplete}>
 

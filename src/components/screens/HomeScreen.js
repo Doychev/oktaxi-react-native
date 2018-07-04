@@ -21,6 +21,8 @@ export default class HomeScreen extends React.Component {
         latitudeDelta: 0.012,
         longitudeDelta: 0.012,
       },
+      userLatitude: 0,
+      userLongitude: 0,
       toolsVisible: true,
       currentLocation: '',
       currentStep: 1,
@@ -31,7 +33,6 @@ export default class HomeScreen extends React.Component {
 
   onRegionChange(region) {
     this.setState({
-      mapRegion: region,
       toolsVisible: false,
     });
   }
@@ -82,13 +83,15 @@ export default class HomeScreen extends React.Component {
   async getUserLocation() {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        this.map.animateToRegion({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.12,
+          longitudeDelta: 0.12,
+        });
         this.setState({
-          mapRegion: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: 0.12,
-            longitudeDelta: 0.12,
-          },
+          userLatitude: position.coords.latitude,
+          userLongitude: position.coords.longitude,
         });
       },
       (error) => {
@@ -96,6 +99,15 @@ export default class HomeScreen extends React.Component {
       },
       { timeout: 15000 },
     );
+  }
+
+  onPressRecenter = () => {
+    this.map.animateToRegion({
+      latitude: this.state.userLatitude,
+      longitude: this.state.userLongitude,
+      latitudeDelta: 0.12,
+      longitudeDelta: 0.12,
+    });
   }
 
   async checkLocationPermission() {
@@ -147,10 +159,10 @@ export default class HomeScreen extends React.Component {
           ref={ref => { this.map = ref; }}
           onPress={e => this.onPressMap(e.nativeEvent)}
           style={styles.mapStyle}
-          region={this.state.mapRegion}
+          initialRegion={this.state.mapRegion}
           onRegionChange={this.onRegionChange}
           onRegionChangeComplete={this.onRegionChangeComplete}>
-
+          provider={MapView.PROVIDER_GOOGLE}
         </MapView>
         {
           this.state.toolsVisible ?
@@ -176,6 +188,9 @@ export default class HomeScreen extends React.Component {
           </TouchableOpacity>
           : null
         }
+        <TouchableOpacity style={styles.recenterButton} onPress={this.onPressRecenter}>
+          <Image style={styles.recenterIcon} resizeMode='contain' source={require('../../images/icons/baseline_place_black.png')}/>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -264,6 +279,19 @@ const styles = StyleSheet.create({
     height: 16,
     borderRadius: 10,
     backgroundColor: Colors.ORANGE,
-  }
-
+  },
+  recenterButton: {
+    position: 'absolute',
+    bottom: 25,
+    right: 20,
+    width: 50,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.LIGHT_GRAY,
+  },
+  recenterIcon: {
+    width: 25,
+    height: 25,
+  },
 });

@@ -6,4 +6,5 @@ export const Colors = {
   TRANSPARENT : "#00000000",
   OVERLAY : "#00000077",
   GRAY : "#CCCCCC",
+  LIGHT_GRAY : "#DDDDDD",
 };

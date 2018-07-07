@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 import IntroScreen from './src/components/screens/IntroScreen';
@@ -7,6 +8,7 @@ import ForgottenPasswordScreen from './src/components/screens/ForgottenPasswordS
 import HomeScreen from './src/components/screens/HomeScreen';
 import OrderTaxiScreen from './src/components/screens/OrderTaxiScreen';
 import OrderTaxiResultScreen from './src/components/screens/OrderTaxiResultScreen';
+import DescriptiveScreen from './src/components/screens/DescriptiveScreen';
 
 const Navigator = StackNavigator({
   Intro: { screen: IntroScreen },
@@ -15,8 +17,12 @@ const Navigator = StackNavigator({
   Home: { screen: HomeScreen },
   OrderTaxi: { screen: OrderTaxiScreen },
   OrderTaxiResult: { screen: OrderTaxiResultScreen },
+  Descriptive: { screen: DescriptiveScreen },
 }, {
   headerMode: 'none',
+  navigationOptions: {
+    gesturesEnabled: false,
+  },
 });
 
 export default class App extends React.Component {

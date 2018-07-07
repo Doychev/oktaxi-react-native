@@ -10,11 +10,18 @@ export default class Toolbar extends React.Component {
 
     };
   }
+
   onPressBack = () => {
     if (this.props.customBackButtonAction != null) {
       this.props.customBackButtonAction();
     } else {
       this.props.navigation.dispatch(NavigationActions.back());
+    }
+  }
+
+  onPressMenu = () => {
+    if (this.props.menuAction != null) {
+      this.props.menuAction();
     }
   }
 
@@ -47,7 +54,15 @@ export default class Toolbar extends React.Component {
         {
           this.props.showBackButton ?
           <TouchableOpacity style={styles.backButton} onPress={this.onPressBack}>
-            <Image style={styles.backIcon} tintColor={Colors.WHITE} resizeMode='contain' source={require('../../images/arrow_left_black.png')}/>
+            <Image style={styles.backIcon} resizeMode='contain' source={require('../../images/arrow_left_black.png')}/>
+          </TouchableOpacity>
+          :
+          null
+        }
+        {
+          this.props.showMenuButton ?
+          <TouchableOpacity style={styles.backButton} onPress={this.onPressMenu}>
+            <Image style={styles.backIcon} resizeMode='contain' source={require('../../images/icons/baseline_menu_black.png')}/>
           </TouchableOpacity>
           :
           null
@@ -83,6 +98,7 @@ const styles = StyleSheet.create({
   backIcon: {
     height: 15,
     width: 15,
+    tintColor: Colors.WHITE,
   },
   extraActionButton: {
     position: 'absolute',

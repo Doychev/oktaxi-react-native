@@ -7,4 +7,5 @@ export const Colors = {
   OVERLAY : "#00000077",
   GRAY : "#CCCCCC",
   LIGHT_GRAY : "#DDDDDD",
+  VERY_DARK_GRAY : "#666666",
 };

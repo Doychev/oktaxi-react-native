@@ -3,9 +3,11 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image } from 'reac
 import { Colors } from '../../Colors.js';
 import MapView from 'react-native-maps';
 import Toolbar from '../elements/Toolbar';
+import Menu from '../elements/Menu';
 import Permissions from 'react-native-permissions';
 import Geocoder from 'react-native-geocoder';
 // Geocoder.fallbackToGoogle(Constants.GOOGLE_MAPS_API_KEY);
+import SideMenu from 'react-native-side-menu';
 
 import { strings } from '../../../locales/i18n';
 
@@ -26,6 +28,7 @@ export default class HomeScreen extends React.Component {
       toolsVisible: true,
       currentLocation: '',
       currentStep: 1,
+      sideMenuOpen: false,
     };
     this.onRegionChange = this.onRegionChange.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
@@ -151,47 +154,52 @@ export default class HomeScreen extends React.Component {
     });
   }
 
+  toggleMenu = () => {
+    this.setState({
+      sideMenuOpen: !this.state.sideMenuOpen,
+    });
+  }
+
   render() {
+    const menu = <Menu navigation={this.props.navigation}/>;
+
     return (
-      <View style={styles.container}>
-        <Toolbar customBackButtonAction={this.customBackButtonAction} showBackButton={this.state.currentStep > 1} title={strings('content.app_title')} navigation={this.props.navigation}/>
-        <MapView
-          ref={ref => { this.map = ref; }}
-          onPress={e => this.onPressMap(e.nativeEvent)}
-          style={styles.mapStyle}
-          initialRegion={this.state.mapRegion}
-          onRegionChange={this.onRegionChange}
-          onRegionChangeComplete={this.onRegionChangeComplete}>
-          provider={MapView.PROVIDER_GOOGLE}
-        </MapView>
-        {
-          this.state.toolsVisible ?
-          <TextInput style={styles.currentLocationBox} value={this.state.currentLocation}/>
-          : null
-        }
-        {
-          this.state.toolsVisible && this.state.currentStep == 1 ?
-          <TouchableOpacity onPress={this.onPressPickUpLocation} style={styles.pickUpLocation}>
-            <Image style={styles.pickUpImage} resizeMode='contain' source={require('../../images/pickuplocation.png')}/>
-            <Text style={styles.pickUpText}>{strings('content.take_me_from_here')}</Text>
+      <SideMenu menu={menu} isOpen={this.state.sideMenuOpen}
+        onChange={(isOpen) => this.setState({sideMenuOpen: isOpen})} disableGestures={this.state.currentStep > 1}>
+        <View style={styles.container}>
+          <Toolbar customBackButtonAction={this.customBackButtonAction} showBackButton={this.state.currentStep > 1}
+            showMenuButton={this.state.currentStep < 2} menuAction={this.toggleMenu}
+            title={strings('content.app_title')} navigation={this.props.navigation}/>
+          <MapView
+            ref={ref => { this.map = ref; }}
+            onPress={e => this.onPressMap(e.nativeEvent)}
+            style={styles.mapStyle}
+            initialRegion={this.state.mapRegion}
+            onRegionChange={this.onRegionChange}
+            onRegionChangeComplete={this.onRegionChangeComplete}>
+            provider={MapView.PROVIDER_GOOGLE}
+          </MapView>
+          {
+            this.state.toolsVisible ?
+            <TextInput style={styles.currentLocationBox} value={this.state.currentLocation}/>
+            : null
+          }
+          {
+            this.state.toolsVisible ?
+            <TouchableOpacity onPress={this.onPressPickUpLocation} style={styles.pickUpLocation}>
+              <Image style={styles.pickUpImage} resizeMode='contain' source={require('../../images/pickuplocation.png')}/>
+              <Text style={styles.pickUpText}>{this.state.currentStep == 1 ? strings('content.take_me_from_here') : strings('content.destination')}</Text>
+            </TouchableOpacity>
+            : null
+          }
+          <View style={styles.dot}>
+            <View style={styles.dotShadow} />
+          </View>
+          <TouchableOpacity style={styles.recenterButton} onPress={this.onPressRecenter}>
+            <Image style={styles.recenterIcon} resizeMode='contain' source={require('../../images/icons/baseline_place_black.png')}/>
           </TouchableOpacity>
-          : null
-        }
-        <View style={styles.dot}>
-          <View style={styles.dotShadow} />
         </View>
-        {
-          this.state.toolsVisible && this.state.currentStep == 2 ?
-          <TouchableOpacity onPress={this.onPressDestination} style={styles.destination}>
-            <Image style={styles.pickUpImage} resizeMode='contain' source={require('../../images/destination.png')}/>
-            <Text style={styles.destinationText}>{strings('content.destination')}</Text>
-          </TouchableOpacity>
-          : null
-        }
-        <TouchableOpacity style={styles.recenterButton} onPress={this.onPressRecenter}>
-          <Image style={styles.recenterIcon} resizeMode='contain' source={require('../../images/icons/baseline_place_black.png')}/>
-        </TouchableOpacity>
-      </View>
+      </SideMenu>
     );
   }
 
@@ -251,18 +259,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  destinationText: {
-    position: 'absolute',
-    bottom: '30%',
-    top: '40%',
-    left: '20%',
-    right: '20%',
-    color: Colors.WHITE,
-    fontSize: 18,
-    fontWeight: 'bold',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  // destinationText: {
+  //   position: 'absolute',
+  //   bottom: '30%',
+  //   top: '40%',
+  //   left: '20%',
+  //   right: '20%',
+  //   color: Colors.WHITE,
+  //   fontSize: 18,
+  //   fontWeight: 'bold',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
   dot: {
     position: 'absolute',
     bottom: '50%',

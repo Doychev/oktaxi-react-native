@@ -20,17 +20,18 @@ export default class IntroScreen extends React.Component {
     };
   }
 
-  componentDidMount() {
-
+  async componentDidMount() {
+    const encodedUser = await AsyncStorage.getItem(Constants.ASYNC_STORE_ENCODED_USER);
+    if (encodedUser && encodedUser.length > 0) {
+      // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
+      this.props.navigation.navigate('Home');
+    }
   }
 
   onPressLogin = async () => {
     if (this.state.username.length > 0 && this.state.password.length > 0) {
       this.showSpinner();
       var encodedUser = base64.encode(this.state.username + ':' + this.state.password);
-      await AsyncStorage.setItem(Constants.ASYNC_STORE_ENCODED_USER, encodedUser);
-      await AsyncStorage.setItem(Constants.ASYNC_STORE_USERNAME, this.state.username);
-
       let response = await NetworkUtils.fetch(
          Constants.BASE_URL + "user/status", {
           method: 'GET',
@@ -46,6 +47,9 @@ export default class IntroScreen extends React.Component {
         //SHOW ERROR
       } else {
         this.hideSpinner();
+        await AsyncStorage.setItem(Constants.ASYNC_STORE_ENCODED_USER, encodedUser);
+        await AsyncStorage.setItem(Constants.ASYNC_STORE_USERNAME, this.state.username);
+        await AsyncStorage.setItem(Constants.ASYNC_STORE_USER_INFO, JSON.stringify(await response.json()));
         // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
         this.props.navigation.navigate('Home');
       }

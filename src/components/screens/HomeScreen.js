@@ -160,6 +160,43 @@ export default class HomeScreen extends React.Component {
     });
   }
 
+  searchAddress = async () => {
+    try {
+      let geocoderResult = await Geocoder.geocodeAddress(this.state.currentLocation);
+      var address = '', latitude = 0, longitude = 0;
+      if (geocoderResult && geocoderResult[0]) {
+        // this.setState({
+        //   currentLocation: JSON.stringify(geocoderResult[0]),
+        // });
+        if (geocoderResult[0].streetName) {
+          address = geocoderResult[0].streetName;
+          if (geocoderResult[0].streetNumber) {
+            address = address + " " + geocoderResult[0].streetNumber;
+          }
+          this.setState({
+            currentLocation: address,
+          });
+        }
+        if (geocoderResult[0].position.lat && geocoderResult[0].position.lng) {
+          this.map.animateToRegion({
+            latitude: geocoderResult[0].position.lat,
+            longitude: geocoderResult[0].position.lng,
+            latitudeDelta: 0.12,
+            longitudeDelta: 0.12,
+          });
+        }
+      }
+      this.setState({
+        toolsVisible: true,
+      });
+    } catch (e) {
+      this.setState({
+        toolsVisible: true,
+        currentLocation: '',
+      });
+    }
+  }
+
   render() {
     const menu = <Menu navigation={this.props.navigation}/>;
 
@@ -181,7 +218,10 @@ export default class HomeScreen extends React.Component {
           </MapView>
           {
             this.state.toolsVisible ?
-            <TextInput style={styles.currentLocationBox} value={this.state.currentLocation}/>
+            <TextInput style={styles.currentLocationBox} value={this.state.currentLocation}
+              onChangeText={(value) => this.setState({currentLocation: value})}
+              returnKeyType='go'
+              onSubmitEditing={(event) => this.searchAddress()}/>
             : null
           }
           {

@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, AsyncStorage } from 'react-native';
 import { Colors } from '../../Colors.js';
+import { Constants } from '../../Constants.js';
 import { strings } from '../../../locales/i18n';
 
 export default class Menu extends React.Component {
@@ -35,8 +36,12 @@ export default class Menu extends React.Component {
     this.props.navigation.navigate('Descriptive', {title: strings('content.terms_conditions'), description: strings('content.terms_conditions_text')});
   }
 
-  onPressExit = () => {
-    // this.props.navigation.navigate('');
+  onPressExit = async () => {
+    await AsyncStorage.removeItem(Constants.ASYNC_STORE_ENCODED_USER);
+    await AsyncStorage.removeItem(Constants.ASYNC_STORE_USERNAME);
+    await AsyncStorage.removeItem(Constants.ASYNC_STORE_USER_INFO);
+    // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
+    this.props.navigation.navigate('Intro');
   }
 
   render() {

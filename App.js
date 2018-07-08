@@ -9,6 +9,9 @@ import HomeScreen from './src/components/screens/HomeScreen';
 import OrderTaxiScreen from './src/components/screens/OrderTaxiScreen';
 import OrderTaxiResultScreen from './src/components/screens/OrderTaxiResultScreen';
 import DescriptiveScreen from './src/components/screens/DescriptiveScreen';
+import ProfileScreen from './src/components/screens/ProfileScreen';
+import ChangePasswordScreen from './src/components/screens/ChangePasswordScreen';
+import OrdersScreen from './src/components/screens/OrdersScreen';
 
 const Navigator = StackNavigator({
   Intro: { screen: IntroScreen },
@@ -18,6 +21,9 @@ const Navigator = StackNavigator({
   OrderTaxi: { screen: OrderTaxiScreen },
   OrderTaxiResult: { screen: OrderTaxiResultScreen },
   Descriptive: { screen: DescriptiveScreen },
+  Profile: { screen: ProfileScreen },
+  ChangePassword: { screen: ChangePasswordScreen },
+  Orders: { screen: OrdersScreen },
 }, {
   headerMode: 'none',
   navigationOptions: {

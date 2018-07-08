@@ -13,11 +13,11 @@ export default class Menu extends React.Component {
   }
 
   onPressMyOrders = () => {
-    // this.props.navigation.navigate('');
+    this.props.navigation.navigate('Orders');
   }
 
   onPressMyProfile = () => {
-    // this.props.navigation.navigate('');
+    this.props.navigation.navigate('Profile');
   }
 
   onPressContact = () => {

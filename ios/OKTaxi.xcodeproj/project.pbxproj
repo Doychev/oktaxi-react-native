@@ -1335,6 +1335,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.busolit.OKTaxi;
 				PRODUCT_NAME = OKTaxi;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1354,6 +1355,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.busolit.OKTaxi;
 				PRODUCT_NAME = OKTaxi;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -4,4 +4,5 @@ export const Constants = {
   ASYNC_STORE_ENCODED_USER : "@CannopolyDataStore:EncodedUser",
   ASYNC_STORE_USERNAME : "@CannopolyDataStore:Username",
   ASYNC_STORE_USER_INFO : "@CannopolyDataStore:UserInfo",
+  ASYNC_STORE_LANGUAGE : "@CannopolyDataStore:Language",
 };

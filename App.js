@@ -12,6 +12,7 @@ import DescriptiveScreen from './src/components/screens/DescriptiveScreen';
 import ProfileScreen from './src/components/screens/ProfileScreen';
 import ChangePasswordScreen from './src/components/screens/ChangePasswordScreen';
 import OrdersScreen from './src/components/screens/OrdersScreen';
+import ChangeLanguageScreen from './src/components/screens/ChangeLanguageScreen';
 
 const Navigator = StackNavigator({
   Intro: { screen: IntroScreen },
@@ -24,6 +25,7 @@ const Navigator = StackNavigator({
   Profile: { screen: ProfileScreen },
   ChangePassword: { screen: ChangePasswordScreen },
   Orders: { screen: OrdersScreen },
+  ChangeLanguage: { screen: ChangeLanguageScreen },
 }, {
   headerMode: 'none',
   navigationOptions: {

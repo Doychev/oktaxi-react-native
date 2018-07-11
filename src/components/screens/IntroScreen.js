@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, I
 import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
 import { NavigationUtils } from '../../util/NavigationUtils';
-import { strings } from '../../../locales/i18n';
+import { strings, switchLanguage } from '../../../locales/i18n';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
 let base64 = require('base-64');
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -21,6 +21,11 @@ export default class IntroScreen extends React.Component {
   }
 
   async componentDidMount() {
+    const language = await AsyncStorage.getItem(Constants.ASYNC_STORE_LANGUAGE);
+    if (language && language.length > 0) {
+      switchLanguage(language, this);
+    }
+
     const encodedUser = await AsyncStorage.getItem(Constants.ASYNC_STORE_ENCODED_USER);
     if (encodedUser && encodedUser.length > 0) {
       // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');

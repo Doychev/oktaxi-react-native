@@ -25,7 +25,7 @@ export default class Menu extends React.Component {
   }
 
   onPressLanguage = () => {
-    // this.props.navigation.navigate('');
+    this.props.navigation.navigate('ChangeLanguage');
   }
 
   onPressAbout = () => {

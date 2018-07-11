@@ -128,24 +128,24 @@ export default class HomeScreen extends React.Component {
 
   }
 
-  onPressPickUpLocation = () => {
-    this.setState({
-      pickUpLocationDescription: this.state.currentLocation,
-      pickUpLocationLatitude: this.state.mapRegion.latitude,
-      pickUpLocationLongitude: this.state.mapRegion.longitude,
-      currentStep: 2,
-    });
-  }
-
-  onPressDestination = () => {
-    this.props.navigation.navigate('OrderTaxi', {
-      pickUpLocationDescription: this.state.pickUpLocationDescription,
-      pickUpLocationLatitude: this.state.pickUpLocationLatitude,
-      pickUpLocationLongitude: this.state.pickUpLocationLongitude,
-      dropOffLocationDescription: this.state.currentLocation,
-      dropOffLocationLatitude: this.state.mapRegion.latitude,
-      dropOffLocationLongitude: this.state.mapRegion.longitude,
-    });
+  onPressOrder = () => {
+    if (this.state.currentStep == 1) {
+      this.setState({
+        pickUpLocationDescription: this.state.currentLocation,
+        pickUpLocationLatitude: this.state.mapRegion.latitude,
+        pickUpLocationLongitude: this.state.mapRegion.longitude,
+        currentStep: 2,
+      });
+    } else if (this.state.currentStep == 2) {
+      this.props.navigation.navigate('OrderTaxi', {
+        pickUpLocationDescription: this.state.pickUpLocationDescription,
+        pickUpLocationLatitude: this.state.pickUpLocationLatitude,
+        pickUpLocationLongitude: this.state.pickUpLocationLongitude,
+        dropOffLocationDescription: this.state.currentLocation,
+        dropOffLocationLatitude: this.state.mapRegion.latitude,
+        dropOffLocationLongitude: this.state.mapRegion.longitude,
+      });      
+    }
   }
 
   customBackButtonAction = () => {
@@ -226,7 +226,7 @@ export default class HomeScreen extends React.Component {
           }
           {
             this.state.toolsVisible ?
-            <TouchableOpacity onPress={this.onPressPickUpLocation} style={styles.pickUpLocation}>
+            <TouchableOpacity onPress={this.onPressOrder} style={styles.pickUpLocation}>
               <Image style={styles.pickUpImage} resizeMode='contain' source={require('../../images/pickuplocation.png')}/>
               <Text style={styles.pickUpText}>{this.state.currentStep == 1 ? strings('content.take_me_from_here') : strings('content.destination')}</Text>
             </TouchableOpacity>

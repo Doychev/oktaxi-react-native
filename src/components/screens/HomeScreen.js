@@ -144,7 +144,7 @@ export default class HomeScreen extends React.Component {
         dropOffLocationDescription: this.state.currentLocation,
         dropOffLocationLatitude: this.state.mapRegion.latitude,
         dropOffLocationLongitude: this.state.mapRegion.longitude,
-      });      
+      });
     }
   }
 
@@ -213,8 +213,9 @@ export default class HomeScreen extends React.Component {
             style={styles.mapStyle}
             initialRegion={this.state.mapRegion}
             onRegionChange={this.onRegionChange}
-            onRegionChangeComplete={this.onRegionChangeComplete}>
-            provider={MapView.PROVIDER_GOOGLE}
+            onRegionChangeComplete={this.onRegionChangeComplete}
+            // provider={MapView.PROVIDER_GOOGLE}
+            >
           </MapView>
           {
             this.state.toolsVisible ?

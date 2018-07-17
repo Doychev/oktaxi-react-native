@@ -82,25 +82,15 @@ export default class OrderTaxiResultScreen extends React.Component {
             break;
 
           case 3:
-          //found
+            this.props.navigation.navigate('OrderTaxiProgress', {
+              orderId: this.state.orderId,
+              resultText: strings('content.order_taxi_found'),
+              orderStatus: 3,
+              responseJson: responseJson,
+            });
             break;
 
-          // case 4:
-          // //at address
-          //   break;
-          //
-          // case 5:
-          // //with client
-          //   break;
-          //
-          // case 6:
-          // //complete
-          //   break;
-
           case 8:
-          // this.setState({
-          //   statusText: 'test',
-          // });
             this.props.navigation.navigate('OrderTaxiEnd', {
               orderId: this.state.orderId,
               resultText: strings('content.order_no_car_found_text'),

@@ -13,6 +13,7 @@ import ProfileScreen from './src/components/screens/ProfileScreen';
 import ChangePasswordScreen from './src/components/screens/ChangePasswordScreen';
 import OrdersScreen from './src/components/screens/OrdersScreen';
 import ChangeLanguageScreen from './src/components/screens/ChangeLanguageScreen';
+import OrderTaxiEndScreen from './src/components/screens/OrderTaxiEndScreen';
 
 const Navigator = StackNavigator({
   Intro: { screen: IntroScreen },
@@ -26,6 +27,7 @@ const Navigator = StackNavigator({
   ChangePassword: { screen: ChangePasswordScreen },
   Orders: { screen: OrdersScreen },
   ChangeLanguage: { screen: ChangeLanguageScreen },
+  OrderTaxiEnd: { screen: OrderTaxiEndScreen },
 }, {
   headerMode: 'none',
   navigationOptions: {

@@ -21,10 +21,16 @@ export default class OrderTaxiResultScreen extends React.Component {
   }
 
   async componentDidMount() {
-    var response = this.props.navigation.state.params.response;
-    var responseJson = await response.json();
+    var response, responseJson;
+    if (this.props.navigation.state.params.response) {
+      response = this.props.navigation.state.params.response;
+      responseJson = await response.json();
+    } else if (this.props.navigation.state.params.responseJson) {
+      responseJson = this.props.navigation.state.params.responseJson;
+    }
     this.setState({
       orderId: responseJson.id,
+      version: responseJson.version,
     });
 
     const encodedUser = await AsyncStorage.getItem(Constants.ASYNC_STORE_ENCODED_USER);
@@ -36,10 +42,112 @@ export default class OrderTaxiResultScreen extends React.Component {
     this.setState({
       username: username,
     });
+
+    this.listenForStatus();
   }
 
-  onPressCancel = () => {
-    this.props.navigation.navigate('Home');
+  async listenForStatus() {
+    try {
+      let response = await NetworkUtils.fetch(
+         Constants.BASE_URL + "order/wait/" + this.state.orderId + "?version=" + this.state.version, {
+          method: 'GET',
+          headers: {
+            'Accept' : 'application/json',
+            'Content-Type' : 'application/json',
+            'Authorization' : 'Basic ' + this.state.encodedUser,
+          },
+        }
+      );
+      var responseJson = await response.json();
+      // this.setState({
+      //   statusText: JSON.stringify(responseJson),
+      // });
+      if (response.status == 302) {
+        this.listenForStatus();
+      } else if (!response.ok) {
+        //SHOW ERROR
+      } else {
+        await this.setState({
+          // orderId: responseJson.id,
+          version: responseJson.version,
+        });
+        switch (responseJson.status) {
+          case 1:
+          case 2:
+          case 10:
+          case 11:
+          case 12:
+          case 13:
+            this.listenForStatus();
+            break;
+
+          case 3:
+          //found
+            break;
+
+          // case 4:
+          // //at address
+          //   break;
+          //
+          // case 5:
+          // //with client
+          //   break;
+          //
+          // case 6:
+          // //complete
+          //   break;
+
+          case 8:
+          // this.setState({
+          //   statusText: 'test',
+          // });
+            this.props.navigation.navigate('OrderTaxiEnd', {
+              orderId: this.state.orderId,
+              resultText: strings('content.order_no_car_found_text'),
+              orderStatus: 8
+            });
+            break;
+
+          default:
+            //do nothing?
+            break;
+        }
+      }
+    } catch (error) {
+      this.setState({
+        statusText: error,
+      });
+      this.listenForStatus();
+    }
+  }
+
+  onPressCancel = async () => {
+    this.showSpinner();
+    let response = await NetworkUtils.fetch(
+       Constants.BASE_URL + "order/status/" + this.state.orderId, {
+        method: 'POST',
+        headers: {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json',
+          'Authorization' : 'Basic ' + this.state.encodedUser,
+        },
+        body: JSON.stringify({
+          "status": 7,
+        }),
+      }
+    );
+    if (!response.ok) {
+      this.hideSpinner();
+      //SHOW ERROR
+    } else {
+      this.hideSpinner();
+      this.props.navigation.navigate('OrderTaxiEnd', {
+        orderId: this.state.orderId,
+        resultText: strings('content.order_cancelled_text'),
+        orderStatus: 7
+      });
+    }
+
   }
 
   showSpinner() {
@@ -58,6 +166,7 @@ export default class OrderTaxiResultScreen extends React.Component {
         <View style={styles.content}>
           <View style={styles.loadingBox}>
             <Text style={styles.loadingText}>{strings('content.order_taxi_searching')}{this.state.orderId}{strings('content.order_taxi_searching_2')}</Text>
+            // <Text style={styles.loadingText}>{this.state.statusText}</Text>
           </View>
           <ActivityIndicator size='large' color={Colors.ORANGE} style={styles.activityIndicator}/>
           <TouchableOpacity style={styles.button} onPress={this.onPressCancel}>

@@ -7,6 +7,7 @@ import CheckBox from 'react-native-checkbox';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MapView from 'react-native-maps';
+const timer = require('react-native-timer');
 
 import { strings } from '../../../locales/i18n';
 
@@ -27,9 +28,14 @@ export default class OrderTaxiProgressScreen extends React.Component {
       orderStatus : -1,
       taxiInfo: "",
       timeOfArrival: "",
+      shouldTrack: true,
     };
     this.onRegionChange = this.onRegionChange.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
+  }
+
+  componentWillUnmount() {
+    timer.clearTimeout(this);
   }
 
   onRegionChange(region) {
@@ -95,15 +101,49 @@ export default class OrderTaxiProgressScreen extends React.Component {
       this.setState({
         orderId: this.props.navigation.state.params.orderId,
         resultText: this.props.navigation.state.params.resultText,
-        // resultText: JSON.stringify(responseJson),
         orderStatus: this.props.navigation.state.params.orderStatus,
         taxiInfo: responseJson.vehicleModel + ", №" + responseJson.vehicleCarNumber,
+        taxiId: responseJson.vehicleId,
         timeOfArrival: responseJson.timeOfArrival,
         version: responseJson.version,
       });
     }
 
     this.listenForStatus();
+    this.trackTaxi();
+  }
+
+  async trackTaxi() {
+    if (!this.state.shouldTrack) {
+      return;
+    }
+    try {
+      let response = await NetworkUtils.fetch(
+         Constants.BASE_URL + "vehicle/status/" + this.state.taxiId, {
+          method: 'GET',
+          headers: {
+            'Accept' : 'application/json',
+            'Content-Type' : 'application/json',
+            'Authorization' : 'Basic ' + this.state.encodedUser,
+          },
+        }
+      );
+      var responseJson = await response.json();
+      if (!response.ok || responseJson.latitude == null) {
+        //SHOW ERROR
+      } else {
+        this.setState({
+          taxiTracked: true,
+          taxiLatitude: responseJson.latitude,
+          taxiLongitude: responseJson.longitude,
+        });
+
+        this.map.fitToElements(true);
+      }
+      timer.setTimeout(this, 'Timer', () => this.trackTaxi(), 5000);
+    } catch (error) {
+      this.trackTaxi();
+    }
   }
 
   async listenForStatus() {
@@ -119,9 +159,6 @@ export default class OrderTaxiProgressScreen extends React.Component {
         }
       );
       var responseJson = await response.json();
-      this.setState({
-        resultText: JSON.stringify(responseJson),
-      });
       if (response.status == 302) {
         this.listenForStatus();
       } else if (!response.ok) {
@@ -147,19 +184,21 @@ export default class OrderTaxiProgressScreen extends React.Component {
             break;
 
           case 6:
-            //show other screen or views?
             this.setState({
-              resultText: strings('content.order_completed'),
+              shouldTrack: false,
             });
-            break;
-
-          case 8:
-            this.props.navigation.navigate('OrderTaxiEnd', {
+            this.props.navigation.navigate('Review', {
               orderId: this.state.orderId,
-              resultText: strings('content.order_no_car_found_text'),
-              orderStatus: 8
             });
             break;
+          // 
+          // case 8:
+          //   this.props.navigation.navigate('OrderTaxiEnd', {
+          //     orderId: this.state.orderId,
+          //     resultText: strings('content.order_no_car_found_text'),
+          //     orderStatus: 8
+          //   });
+          //   break;
 
           default:
             this.listenForStatus();
@@ -167,19 +206,9 @@ export default class OrderTaxiProgressScreen extends React.Component {
         }
       }
     } catch (error) {
-      this.setState({
-        resultText: error,
-      });
       this.listenForStatus();
     }
   }
-
-  /*
-  responseJson.minutesArrive
-  responseJson.id
-  responseJson.timeOfArrival
-  responseJson.vehicleId
-  */
 
   onPressNewSearch = async () => {
     this.showSpinner();
@@ -253,10 +282,19 @@ export default class OrderTaxiProgressScreen extends React.Component {
             <MapView.Marker
               coordinate={{
                 latitude: this.state.userLatitude,
-                longitude: this.state.userLongitude,
-              }}>
-                <Image source={require('../../images/icons/baseline_person_pin_circle_black.png')} style={styles.locationMarker}/>
+                longitude: this.state.userLongitude}}>
+              <Image source={require('../../images/icons/baseline_person_pin_circle_black.png')} style={styles.locationMarker}/>
+            </MapView.Marker>
+            {
+              this.state.taxiTracked ?
+              <MapView.Marker
+                coordinate={{
+                  latitude: this.state.taxiLatitude,
+                  longitude: this.state.taxiLongitude}}>
+                <Image source={require('../../images/launch_img.png')} style={styles.taxiMarker}/>
               </MapView.Marker>
+              : null
+            }
           </MapView>
         </View>
       </View>
@@ -324,6 +362,10 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     tintColor: Colors.ORANGE,
+  },
+  taxiMarker: {
+    width: 45,
+    height: 45,
   },
   button: {
     marginLeft: 20,

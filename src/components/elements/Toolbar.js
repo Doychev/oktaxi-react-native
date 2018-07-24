@@ -94,8 +94,10 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 20,
+    padding: 10,
   },
   backIcon: {
+    padding: 10,
     height: 15,
     width: 15,
     tintColor: Colors.WHITE,

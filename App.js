@@ -15,6 +15,7 @@ import OrdersScreen from './src/components/screens/OrdersScreen';
 import ChangeLanguageScreen from './src/components/screens/ChangeLanguageScreen';
 import OrderTaxiEndScreen from './src/components/screens/OrderTaxiEndScreen';
 import OrderTaxiProgressScreen from './src/components/screens/OrderTaxiProgressScreen';
+import ReviewScreen from './src/components/screens/ReviewScreen';
 
 const Navigator = StackNavigator({
   Intro: { screen: IntroScreen },
@@ -30,6 +31,7 @@ const Navigator = StackNavigator({
   ChangeLanguage: { screen: ChangeLanguageScreen },
   OrderTaxiEnd: { screen: OrderTaxiEndScreen },
   OrderTaxiProgress: { screen: OrderTaxiProgressScreen },
+  Review: { screen: ReviewScreen },
 }, {
   headerMode: 'none',
   navigationOptions: {

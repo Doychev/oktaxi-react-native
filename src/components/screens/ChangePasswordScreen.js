@@ -4,6 +4,9 @@ import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
 import { strings } from '../../../locales/i18n';
 import Toolbar from '../elements/Toolbar';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { NetworkUtils } from '../../util/NetworkUtils.js';
+let base64 = require('base-64');
 
 export default class ChangePasswordScreen extends React.Component {
   static navigationOptions = { title: 'ChangePassword', header: null };
@@ -11,6 +14,7 @@ export default class ChangePasswordScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      spinnerVisible : false,
       phoneNumber: '',
       oldPassword: '',
       newPassword: '',
@@ -24,16 +28,53 @@ export default class ChangePasswordScreen extends React.Component {
         phoneNumber: username,
       });
     }
+
+    const encodedUser = await AsyncStorage.getItem(Constants.ASYNC_STORE_ENCODED_USER);
+    this.setState({
+      encodedUser: encodedUser,
+    });
   }
 
-  onPressChangePassword = () => {
-    //change pass
-    this.props.navigation.navigate('Profile', {passwordChanged: true});
+  onPressChangePassword = async () => {
+    this.showSpinner();
+    let response = await NetworkUtils.fetch(
+       Constants.BASE_URL + "user/changePassword", {
+        method: 'POST',
+        headers: {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json',
+          'Authorization' : 'Basic ' + this.state.encodedUser,
+        },
+        body: JSON.stringify({
+          "userName": this.state.phoneNumber,
+          "passwordOld": this.state.oldPassword,
+          "passwordNew": this.state.newPassword,
+        }),
+      }
+    );
+    if (!response.ok) {
+      this.hideSpinner();
+      //SHOW ERROR
+    } else {
+      var encodedUser = base64.encode(this.state.phoneNumber + ':' + this.state.newPassword);
+      await AsyncStorage.setItem(Constants.ASYNC_STORE_ENCODED_USER, encodedUser);
+      this.hideSpinner();
+      this.props.navigation.navigate('Profile', {passwordChanged: true});
+    }
+  }
+
+  showSpinner() {
+    this.setState({ spinnerVisible : true});
+  }
+
+  hideSpinner() {
+    this.setState({ spinnerVisible : false});
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
         <Toolbar showBackButton={true} title={strings('content.my_profile')} navigation={this.props.navigation}/>
         <View style={styles.content}>
           <View style={styles.profile}>
@@ -48,7 +89,7 @@ export default class ChangePasswordScreen extends React.Component {
                 <TextInput style={styles.fieldText} value={this.state.oldPassword}
                   onChangeText={(value) => this.setState({oldPassword: value})}
                   returnKeyType='next' autoCapitalize = 'none'
-                  ref='oldPasswordField'
+                  ref='oldPasswordField' secureTextEntry={true}
                   onSubmitEditing={(event) => { this.refs.newPasswordField.focus(); }}
                   placeholder={strings('content.password_old')} placeholderTextColor={Colors.GRAY} />
             </View>
@@ -58,7 +99,7 @@ export default class ChangePasswordScreen extends React.Component {
                 <TextInput style={styles.fieldText} value={this.state.newPassword}
                   onChangeText={(value) => this.setState({newPassword: value})}
                   returnKeyType='next' autoCapitalize = 'none'
-                  ref='newPasswordField'
+                  ref='newPasswordField' secureTextEntry={true}
                   onSubmitEditing={(event) => { this.onPressChangePassword(); }}
                   placeholder={strings('content.password_new')} placeholderTextColor={Colors.GRAY} />
             </View>

@@ -17,6 +17,7 @@ export default class IntroScreen extends React.Component {
       spinnerVisible : false,
       username: '',
       password: '',
+      message: false,
     };
   }
 
@@ -28,8 +29,7 @@ export default class IntroScreen extends React.Component {
 
     const encodedUser = await AsyncStorage.getItem(Constants.ASYNC_STORE_ENCODED_USER);
     if (encodedUser && encodedUser.length > 0) {
-      // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
-      this.props.navigation.navigate('Home');
+      NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
     }
   }
 
@@ -81,6 +81,13 @@ export default class IntroScreen extends React.Component {
     return (
       <ImageBackground style={styles.container} resizeMode='stretch' source={require('../../images/taxi3.png')}>
         <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
+        {
+          this.props.navigation.state.params && this.props.navigation.state.params.message ?
+          <View style={styles.messageBox}>
+            <Text style={styles.messageText}>{this.props.navigation.state.params.message}</Text>
+          </View>
+          : null
+        }
         <View style={styles.top}>
           <Text style={styles.line1}>{strings('content.login_top')}</Text>
           <Text style={styles.line2}>{strings('content.company_name')}</Text>
@@ -128,6 +135,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  messageBox: {
+    height: 40,
+    backgroundColor: Colors.WHITE,
+    alignSelf: 'stretch',
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  messageText: {
+    color: Colors.ORANGE,
+    textAlign: 'center',
   },
   top: {
     flex: 2,

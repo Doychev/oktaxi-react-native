@@ -25,29 +25,31 @@ export default class ForgottenPasswordScreen extends React.Component {
 
   onPressGo = async () => {
     if (this.state.username.length > 0) {
-      // this.showSpinner();
-      // var encodedUser = base64.encode(this.state.username + ':' + this.state.password);
-      // await AsyncStorage.setItem(Constants.ASYNC_STORE_ENCODED_USER, encodedUser);
-      // await AsyncStorage.setItem(Constants.ASYNC_STORE_USERNAME, this.state.username);
-      //
-      // let response = await NetworkUtils.fetch(
-      //    Constants.BASE_URL + "user/status", {
-      //     method: 'GET',
-      //     headers: {
-      //       'Accept' : 'application/json',
-      //       'Content-Type' : 'application/json',
-      //       'Authorization' : 'Basic ' + encodedUser,
-      //     },
-      //   }
-      // );
-      // if (!response.ok) {
-      //   this.hideSpinner();
-      //   //SHOW ERROR
-      // } else {
-      //   this.hideSpinner();
-      //   // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
-      //   this.props.navigation.navigate('Home');
-      // }
+      this.showSpinner();
+
+      var dummyUser = base64.encode('test:test');
+      let response = await NetworkUtils.fetch(
+         Constants.BASE_URL + "user/forgottenPassword", {
+          method: 'POST',
+          headers: {
+            'Accept' : 'application/json',
+            'Content-Type' : 'application/json',
+            'Authorization' : 'Basic ' + dummyUser,
+          },
+          body: JSON.stringify({
+            "userName": this.state.username,
+          }),
+        }
+      );
+      // this.hideSpinner();
+      let responseText = await response.text();
+      if (!response.ok) {
+        this.hideSpinner();
+        //SHOW ERROR
+      } else {
+        this.hideSpinner();
+        this.props.navigation.navigate('Intro', {message: strings('content.login_forgotten_password_msg_tel')});
+      }
     }
   }
 

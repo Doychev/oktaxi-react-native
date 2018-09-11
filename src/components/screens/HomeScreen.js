@@ -42,7 +42,7 @@ export default class HomeScreen extends React.Component {
 
   async onRegionChangeComplete(region) {
     try {
-      let geocoderResult = await Geocoder.geocodePosition({lat: region.latitude, lng: region.longitude});
+      let geocoderResult = await Geocoder.geocodePositionWithLanguage({lat: region.latitude, lng: region.longitude}, 'bg');
       var address = '';
       if (geocoderResult && geocoderResult[0] && geocoderResult[0].streetName) {
         address = geocoderResult[0].streetName;

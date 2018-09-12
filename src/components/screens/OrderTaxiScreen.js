@@ -170,8 +170,6 @@ export default class OrderTaxiScreen extends React.Component {
               </View>
               : null
             }
-            <CheckBox label={strings('content.order_later')} checked={this.state.deferredChecked}
-              containerStyle={styles.checkbox} labelStyle={styles.checkboxLabel} onChange={(checked) => this.onCheckDeferred(checked)} />
           </View>
           <TouchableOpacity style={styles.orderButton} onPress={this.onPressOrder}>
             <Text style={styles.buttonText}>{strings('content.order')}</Text>
@@ -182,6 +180,8 @@ export default class OrderTaxiScreen extends React.Component {
   }
 
 }
+// <CheckBox label={strings('content.order_later')} checked={this.state.deferredChecked}
+//   containerStyle={styles.checkbox} labelStyle={styles.checkboxLabel} onChange={(checked) => this.onCheckDeferred(checked)} />
 
 const styles = StyleSheet.create({
   container: {

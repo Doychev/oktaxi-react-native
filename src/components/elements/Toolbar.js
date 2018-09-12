@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     padding: 10,
-    height: 15,
-    width: 15,
+    height: 25,
+    width: 25,
     tintColor: Colors.WHITE,
   },
   extraActionButton: {

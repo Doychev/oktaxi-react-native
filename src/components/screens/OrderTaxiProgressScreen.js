@@ -191,7 +191,7 @@ export default class OrderTaxiProgressScreen extends React.Component {
               orderId: this.state.orderId,
             });
             break;
-          // 
+          //
           // case 8:
           //   this.props.navigation.navigate('OrderTaxiEnd', {
           //     orderId: this.state.orderId,
@@ -266,7 +266,7 @@ export default class OrderTaxiProgressScreen extends React.Component {
             this.state.orderStatus == 3 ?
             <View style={styles.resultBox}>
               <Image style={styles.icon} resizeMode='contain'
-                source={require('../../images/icons/baseline_local_taxi_black.png')}/>
+                source={require('../../images/icons/baseline_language_black.png')}/>
               <Text style={styles.resultText}>{strings('content.expected_time_arrival')}: {this.state.timeOfArrival}</Text>
             </View>
             : null

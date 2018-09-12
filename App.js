@@ -16,8 +16,10 @@ import ChangeLanguageScreen from './src/components/screens/ChangeLanguageScreen'
 import OrderTaxiEndScreen from './src/components/screens/OrderTaxiEndScreen';
 import OrderTaxiProgressScreen from './src/components/screens/OrderTaxiProgressScreen';
 import ReviewScreen from './src/components/screens/ReviewScreen';
+import SplashScreen from './src/components/screens/SplashScreen';
 
 const Navigator = StackNavigator({
+  Splash: { screen: SplashScreen },
   Intro: { screen: IntroScreen },
   Registration: { screen: RegistrationScreen },
   ForgottenPassword: { screen: ForgottenPasswordScreen },

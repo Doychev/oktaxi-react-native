@@ -156,7 +156,6 @@ export default class OrderTaxiResultScreen extends React.Component {
         <View style={styles.content}>
           <View style={styles.loadingBox}>
             <Text style={styles.loadingText}>{strings('content.order_taxi_searching')}{this.state.orderId}{strings('content.order_taxi_searching_2')}</Text>
-            // <Text style={styles.loadingText}>{this.state.statusText}</Text>
           </View>
           <ActivityIndicator size='large' color={Colors.ORANGE} style={styles.activityIndicator}/>
           <TouchableOpacity style={styles.button} onPress={this.onPressCancel}>

@@ -23,6 +23,8 @@ export default class HomeScreen extends React.Component {
         latitudeDelta: 0.012,
         longitudeDelta: 0.012,
       },
+      currentLatitude: 0,
+      currentLongitude: 0,
       userLatitude: 0,
       userLongitude: 0,
       toolsVisible: true,
@@ -59,6 +61,8 @@ export default class HomeScreen extends React.Component {
       this.setState({
         toolsVisible: true,
         currentLocation: '',
+        currentLatitude: region.latitude,
+        currentLongitude: region.longitude,
       });
     }
   }
@@ -132,8 +136,8 @@ export default class HomeScreen extends React.Component {
     if (this.state.currentStep == 1) {
       this.setState({
         pickUpLocationDescription: this.state.currentLocation,
-        pickUpLocationLatitude: this.state.mapRegion.latitude,
-        pickUpLocationLongitude: this.state.mapRegion.longitude,
+        pickUpLocationLatitude: this.state.currentLatitude,
+        pickUpLocationLongitude: this.state.currentLongitude,
         currentStep: 2,
       });
     } else if (this.state.currentStep == 2) {
@@ -142,8 +146,8 @@ export default class HomeScreen extends React.Component {
         pickUpLocationLatitude: this.state.pickUpLocationLatitude,
         pickUpLocationLongitude: this.state.pickUpLocationLongitude,
         dropOffLocationDescription: this.state.currentLocation,
-        dropOffLocationLatitude: this.state.mapRegion.latitude,
-        dropOffLocationLongitude: this.state.mapRegion.longitude,
+        dropOffLocationLatitude: this.state.currentLatitude,
+        dropOffLocationLongitude: this.state.currentLongitude,
       });
     }
   }

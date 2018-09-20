@@ -19,7 +19,7 @@ export const NetworkUtils = {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         reject(new Error("timeout"))
-      }, 10000);
+      }, 11000);
       fetch(url, params).then(resolve, reject);
     });
   },

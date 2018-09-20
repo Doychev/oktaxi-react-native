@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>5</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -35,6 +35,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>OK-Taxi does not use that permission.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>OK-Taxi does not use that permission.</string>
 	<key>NSCalendarsUsageDescription</key>

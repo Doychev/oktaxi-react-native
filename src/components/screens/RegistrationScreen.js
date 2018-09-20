@@ -29,29 +29,39 @@ export default class RegistrationScreen extends React.Component {
 
   onPressGo = async () => {
     if (this.state.username.length > 0) {
-      // this.showSpinner();
-      // var encodedUser = base64.encode(this.state.username + ':' + this.state.password);
-      // await AsyncStorage.setItem(Constants.ASYNC_STORE_ENCODED_USER, encodedUser);
-      // await AsyncStorage.setItem(Constants.ASYNC_STORE_USERNAME, this.state.username);
-      //
-      // let response = await NetworkUtils.fetch(
-      //    Constants.BASE_URL + "user/status", {
-      //     method: 'GET',
-      //     headers: {
-      //       'Accept' : 'application/json',
-      //       'Content-Type' : 'application/json',
-      //       'Authorization' : 'Basic ' + encodedUser,
-      //     },
-      //   }
-      // );
-      // if (!response.ok) {
-      //   this.hideSpinner();
-      //   //SHOW ERROR
-      // } else {
-      //   this.hideSpinner();
-      //   // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
-      //   this.props.navigation.navigate('Home');
-      // }
+      this.showSpinner();
+      var dummyUser = base64.encode('test:test');
+      let response = await NetworkUtils.fetch(
+         Constants.BASE_URL + "user/signin", {
+          method: 'POST',
+          headers: {
+            'Accept' : 'application/json',
+            'Content-Type' : 'application/json',
+            'Authorization' : 'Basic ' + dummyUser,
+          },
+          body: JSON.stringify({
+            "names": this.state.names,
+            "email": this.state.email,
+            "userName": this.state.username,
+          }),
+        }
+      );
+      if (!response.ok) {
+        this.hideSpinner();
+        //SHOW ERROR
+      } else {
+        this.hideSpinner();
+        var responseJson = await response.json();
+        if (responseJson.phoneType == 1) {
+          //not valid
+        } else if (responseJson.phoneType == 2) {
+          this.props.navigation.navigate('Intro', {message: strings('content.login_signin_msg_tel')});
+        } else if (responseJson.phoneType == 3) {
+          this.props.navigation.navigate('Intro', {message: strings('content.login_signin_msg_tel')});
+        } else {
+          //?
+        }
+      }
     }
   }
 
@@ -83,43 +93,43 @@ export default class RegistrationScreen extends React.Component {
           <Text style={styles.line1}>{strings('content.signin_top_welcome_2')}</Text>
         </View>
         <View style={styles.inputSection}>
-        <View style={styles.input}>
-          <Image style={styles.inputIcon} resizeMode='contain'
-            source={require('../../images/icons/baseline_call_black.png')}/>
-          <TextInput style={styles.inputText} value={this.state.username}
-            onChangeText={(value) => this.setState({username: value})}
-            returnKeyType='next' autoCapitalize = 'none'
-            ref='usernameField'
-            onSubmitEditing={(event) => { this.refs.namesField.focus(); }}
-            placeholder={strings('content.phone')} placeholderTextColor={Colors.GRAY} />
-        </View>
-        <View style={styles.input}>
-          <Image style={styles.inputIcon} resizeMode='contain'
-            source={require('../../images/icons/baseline_person_black.png')}/>
-          <TextInput style={styles.inputText} value={this.state.names}
-            onChangeText={(value) => this.setState({names: value})}
-            returnKeyType='next' autoCapitalize = 'none'
-            ref='namesField'
-            onSubmitEditing={(event) => { this.refs.emailField.focus(); }}
-            placeholder={strings('content.name')} placeholderTextColor={Colors.GRAY} />
-        </View>
-        <View style={styles.input}>
-          <Image style={styles.inputIcon} resizeMode='contain'
-            source={require('../../images/icons/baseline_email_black.png')}/>
-          <TextInput style={styles.inputText} value={this.state.email}
-            onChangeText={(value) => this.setState({email: value})}
-            returnKeyType='next' autoCapitalize = 'none'
-            ref='emailField'
-            placeholder={strings('content.email')} placeholderTextColor={Colors.GRAY} />
-        </View>
-        <View style={styles.input}>
-          <CheckBox label={strings('content.accept_terms_conditions')} checked={this.state.termsCheckboxChecked}
-            containerStyle={styles.checkbox} labelStyle={styles.checkboxLabel} onChange={(checked) => this.onCheckTerms(checked)} />
+          <View style={styles.input}>
+            <Image style={styles.inputIcon} resizeMode='contain'
+              source={require('../../images/icons/baseline_call_black.png')}/>
+            <TextInput style={styles.inputText} value={this.state.username}
+              onChangeText={(value) => this.setState({username: value})}
+              returnKeyType='next' autoCapitalize = 'none'
+              ref='usernameField'
+              onSubmitEditing={(event) => { this.refs.namesField.focus(); }}
+              placeholder={strings('content.phone')} placeholderTextColor={Colors.GRAY} />
+          </View>
+          <View style={styles.input}>
+            <Image style={styles.inputIcon} resizeMode='contain'
+              source={require('../../images/icons/baseline_person_black.png')}/>
+            <TextInput style={styles.inputText} value={this.state.names}
+              onChangeText={(value) => this.setState({names: value})}
+              returnKeyType='next' autoCapitalize = 'none'
+              ref='namesField'
+              onSubmitEditing={(event) => { this.refs.emailField.focus(); }}
+              placeholder={strings('content.name')} placeholderTextColor={Colors.GRAY} />
+          </View>
+          <View style={styles.input}>
+            <Image style={styles.inputIcon} resizeMode='contain'
+              source={require('../../images/icons/baseline_email_black.png')}/>
+            <TextInput style={styles.inputText} value={this.state.email}
+              onChangeText={(value) => this.setState({email: value})}
+              returnKeyType='next' autoCapitalize = 'none'
+              ref='emailField'
+              placeholder={strings('content.email')} placeholderTextColor={Colors.GRAY} />
+          </View>
+          <View style={styles.input}>
+            <CheckBox label={strings('content.accept_terms_conditions')} checked={this.state.termsCheckboxChecked}
+              containerStyle={styles.checkbox} labelStyle={styles.checkboxLabel} onChange={(checked) => this.onCheckTerms(checked)} />
+          </View>
         </View>
         <TouchableOpacity style={styles.loginButton} onPress={this.onPressGo}>
           <Text style={styles.buttonText}>{strings('content.go')}</Text>
         </TouchableOpacity>
-        </View>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={this.onPressLogin}>
             <Text style={styles.link}>{strings('content.if_you_have_account')}</Text>
@@ -148,6 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'stretch',
     marginTop: 20,
+    marginBottom: 40,
   },
   input: {
     height: 45,

@@ -5,4 +5,6 @@ export const Constants = {
   ASYNC_STORE_USERNAME : "@CannopolyDataStore:Username",
   ASYNC_STORE_USER_INFO : "@CannopolyDataStore:UserInfo",
   ASYNC_STORE_LANGUAGE : "@CannopolyDataStore:Language",
+
+  GOOGLE_MAPS_API_KEY : "AIzaSyBPEDzV_shU5t4qHgOF_0y3gsKYc2EAxFc",
 };

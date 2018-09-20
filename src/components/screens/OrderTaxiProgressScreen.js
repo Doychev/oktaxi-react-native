@@ -98,7 +98,10 @@ export default class OrderTaxiProgressScreen extends React.Component {
 
     if (this.props.navigation.state.params.resultText) {
       var responseJson = this.props.navigation.state.params.responseJson;
+      alert(JSON.stringify(responseJson));
       this.setState({
+        startLatitude: this.props.navigation.state.params.startLatitude,
+        startLongitude: this.props.navigation.state.params.startLongitude,
         orderId: this.props.navigation.state.params.orderId,
         resultText: this.props.navigation.state.params.resultText,
         orderStatus: this.props.navigation.state.params.orderStatus,
@@ -281,8 +284,8 @@ export default class OrderTaxiProgressScreen extends React.Component {
             >
             <MapView.Marker
               coordinate={{
-                latitude: this.state.userLatitude,
-                longitude: this.state.userLongitude}}>
+                latitude: this.state.startLatitude,
+                longitude: this.state.startLongitude}}>
               <Image source={require('../../images/icons/baseline_person_pin_circle_black.png')} style={styles.locationMarker}/>
             </MapView.Marker>
             {

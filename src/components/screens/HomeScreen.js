@@ -1,13 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
+import { Constants } from '../../Constants.js';
 import { Colors } from '../../Colors.js';
 import MapView from 'react-native-maps';
 import Toolbar from '../elements/Toolbar';
 import Menu from '../elements/Menu';
 import Permissions from 'react-native-permissions';
 import Geocoder from 'react-native-geocoder';
-// Geocoder.fallbackToGoogle(Constants.GOOGLE_MAPS_API_KEY);
+Geocoder.fallbackToGoogle(Constants.GOOGLE_MAPS_API_KEY);
 import SideMenu from 'react-native-side-menu';
+import { NetworkUtils } from '../../util/NetworkUtils.js';
 
 import { strings } from '../../../locales/i18n';
 
@@ -55,6 +57,8 @@ export default class HomeScreen extends React.Component {
       this.setState({
         toolsVisible: true,
         currentLocation: address,
+        currentLatitude: region.latitude,
+        currentLongitude: region.longitude,
         //JSON.stringify(geocoderResult[0])
       });
     } catch (e) {
@@ -68,21 +72,23 @@ export default class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
-    // this.checkLocationPermission().then( status => {
-    //   if (status === 'authorized') {
-    //     this.getUserLocation();
-    //   } else {
-    //     this.getLocationPermission().then( status => {
-    //       if (status === 'authorized') {
-    //         this.getUserLocation();
-    //       } else {
-    //         //rejected
-    //         //show block screen
-    //       }
-    //     });
-    //   }
-    // });
-    this.getUserLocation();
+    if (!await NetworkUtils.checkForNetwork()) {
+      Alert.alert('', strings('content.turn_on_internet'));
+    }
+
+    this.checkLocationPermission().then( status => {
+      if (status === 'authorized') {
+        this.getUserLocation();
+      } else {
+        this.getLocationPermission().then( status => {
+          if (status === 'authorized') {
+            this.getUserLocation();
+          } else {
+            Alert.alert('', strings('content.turn_on_gps'));
+          }
+        });
+      }
+    });
     // this.getUserLocation();
 
   }
@@ -139,7 +145,9 @@ export default class HomeScreen extends React.Component {
         pickUpLocationLatitude: this.state.currentLatitude,
         pickUpLocationLongitude: this.state.currentLongitude,
         currentStep: 2,
+        currentLocation: '',
       });
+      this.refs.locationBox.focus();
     } else if (this.state.currentStep == 2) {
       this.props.navigation.navigate('OrderTaxi', {
         pickUpLocationDescription: this.state.pickUpLocationDescription,
@@ -226,6 +234,7 @@ export default class HomeScreen extends React.Component {
             <TextInput style={styles.currentLocationBox} value={this.state.currentLocation}
               onChangeText={(value) => this.setState({currentLocation: value})}
               returnKeyType='go'
+              ref='locationBox'
               onSubmitEditing={(event) => this.searchAddress()}/>
             : null
           }

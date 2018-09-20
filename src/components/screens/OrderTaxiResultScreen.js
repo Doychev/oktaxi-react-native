@@ -87,6 +87,8 @@ export default class OrderTaxiResultScreen extends React.Component {
               resultText: strings('content.order_taxi_found'),
               orderStatus: 3,
               responseJson: responseJson,
+              startLatitude: this.props.navigation.state.params.startLatitude,
+              startLongitude: this.props.navigation.state.params.startLongitude,
             });
             break;
 

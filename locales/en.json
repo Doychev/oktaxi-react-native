@@ -103,7 +103,8 @@
 		"cancel": "Cancel",
 		"accept_terms_conditions": "I accept the Terms and conditions",
 		"turn_on_gps": "In order to use the application please switch on Location Services",
+		"turn_on_internet": "In order to use the application please switch on your Internet connection",
 		"phone_not_valid": "Not a valid phone number",
-		"thank_you_for_order": "Thank you for using the services of OK SUPERTRANS! You are welcome again!",	
+		"thank_you_for_order": "Thank you for using the services of OK SUPERTRANS! You are welcome again!",
 	}
 }

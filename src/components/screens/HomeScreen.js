@@ -48,11 +48,11 @@ export default class HomeScreen extends React.Component {
     try {
       let geocoderResult = await Geocoder.geocodePositionWithLanguage({lat: region.latitude, lng: region.longitude}, 'bg');
       var address = '';
-      if (geocoderResult && geocoderResult[0] && geocoderResult[0].streetName) {
-        address = geocoderResult[0].streetName;
-        if (geocoderResult[0].streetNumber) {
-          address = address + " " + geocoderResult[0].streetNumber;
-        }
+      if (geocoderResult && geocoderResult[0]) {
+        address = geocoderResult[0].formattedAddress;
+        // if (geocoderResult[0].streetNumber) {
+        //   address = address + " " + geocoderResult[0].streetNumber;
+        // }
       }
       this.setState({
         toolsVisible: true,
@@ -227,6 +227,7 @@ export default class HomeScreen extends React.Component {
             onRegionChange={this.onRegionChange}
             onRegionChangeComplete={this.onRegionChangeComplete}
             // provider={MapView.PROVIDER_GOOGLE}
+            //style={StyleSheet.absoluteFill}
             >
           </MapView>
           {

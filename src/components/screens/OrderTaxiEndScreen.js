@@ -63,10 +63,7 @@ export default class OrderTaxiEndScreen extends React.Component {
   }
 
   onPressNewOrder = () => {
-    this.setState({
-      currentStep: 1,
-    });
-    this.props.navigation.navigate('Home');
+    this.props.navigation.navigate('Home', {currentStep: 1});
   }
 
   showSpinner() {

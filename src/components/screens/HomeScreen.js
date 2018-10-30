@@ -36,7 +36,7 @@ export default class HomeScreen extends React.Component {
     this.onRegionChange = this.onRegionChange.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
   }
-  alert(this.state.currentStep);
+  // alert(this.state.currentStep);
   onRegionChange(region) {
     this.setState({
       toolsVisible: false,
@@ -86,6 +86,12 @@ export default class HomeScreen extends React.Component {
     //     });
     //   }
     // });
+    if (this.props.navigation.state.params && this.props.navigation.state.params.currentStep) {
+      alert(this.props.navigation.state.params.currentStep);
+      this.setState({
+        currentStep: this.props.navigation.state.params.currentStep,
+      });
+    }
     this.getUserLocation();
     // this.getUserLocation();
   }

@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
 import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
+import { NetworkUtils } from '../../util/NetworkUtils.js';
 import MapView from 'react-native-maps';
 import Toolbar from '../elements/Toolbar';
 import Menu from '../elements/Menu';
@@ -72,22 +73,24 @@ export default class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
-    // this.checkLocationPermission().then( status => {
-    //   if (status === 'authorized') {
-    //     this.getUserLocation();
-    //   } else {
-    //     this.getLocationPermission().then( status => {
-    //       if (status === 'authorized') {
-    //         this.getUserLocation();
-    //       } else {
-    //         //rejected
-    //         //show block screen
-    //       }
-    //     });
-    //   }
-    // });
+    this.checkLocationPermission().then( status => {
+      if (status === 'authorized') {
+        this.getUserLocation();
+      } else {
+        this.getLocationPermission().then( status => {
+          if (status === 'authorized') {
+            this.getUserLocation();
+          } else {
+            Alert.alert('', strings('content.turn_on_gps'),
+            {cancelable: false},
+          );
+          }
+        });
+      }
+    });
+
+    this.checkForNetwork();
     this.getUserLocation();
-    // this.getUserLocation();
   }
   /*
   if ((this.state.currentStep)&&(this.state.currentStep == 2)) {
@@ -98,6 +101,21 @@ export default class HomeScreen extends React.Component {
     longDelta: 0.005,
   }
 */
+
+  checkForNetwork() {
+    if (!NetworkUtils.checkForNetwork()) {
+      Alert.alert('', strings('content.turn_on_internet'),
+      [
+        {
+          text: 'OK', onPress: () => {this.checkForNetwork()}
+        },
+      ],
+      {cancelable: false},
+    );
+    }
+}
+
+
   async getUserLocation() {
     navigator.geolocation.getCurrentPosition(
       async (position) => {

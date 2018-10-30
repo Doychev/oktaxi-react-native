@@ -61,11 +61,11 @@ export default class OrderTaxiScreen extends React.Component {
     });
   }
 
-  onCheckDeferred = (checked) => {
-    this.setState({
-      deferredChecked: !this.state.deferredChecked,
-    });
-  }
+//  onCheckDeferred = (checked) => {
+  //  this.setState({
+    //  deferredChecked: !this.state.deferredChecked,
+    //});
+//  }
 
   onPressOrder = async () => {
     this.showSpinner();
@@ -132,6 +132,7 @@ export default class OrderTaxiScreen extends React.Component {
               <Image style={styles.inputIcon} resizeMode='contain'
                 source={require('../../images/icons/baseline_person_pin_circle_black.png')}/>
               <TextInput style={styles.inputText} value={this.state.pickUpAddress}
+                label={strings('content.take_me_from_here')} labelStyle={styles.checkboxLabel}
                 onChangeText={(value) => this.setState({pickUpAddress: value})}
                 returnKeyType='next' autoCapitalize = 'none'
                 ref='pickUpAddressField'
@@ -140,7 +141,7 @@ export default class OrderTaxiScreen extends React.Component {
             <View style={styles.input}>
               <Image style={styles.inputIcon} resizeMode='contain'
                 source={require('../../images/icons/baseline_place_black.png')}/>
-              <TextInput style={styles.inputText} value={this.state.dropOffAddress}
+              <TextInput style={styles.inputText} value={this.state.dropOffAddress} label={strings('content.destination')}
                 onChangeText={(value) => this.setState({dropOffAddress: value})}
                 returnKeyType='next' autoCapitalize = 'none'
                 ref='dropOffAddressField'
@@ -171,6 +172,7 @@ export default class OrderTaxiScreen extends React.Component {
               </View>
               : null
             }
+
             <CheckBox label={strings('content.order_later')} checked={this.state.deferredChecked}
               containerStyle={styles.checkbox} labelStyle={styles.checkboxLabel} onChange={(checked) => this.onCheckDeferred(checked)} />
           </View>

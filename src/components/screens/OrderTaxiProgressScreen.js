@@ -98,7 +98,7 @@ export default class OrderTaxiProgressScreen extends React.Component {
 
     if (this.props.navigation.state.params.resultText) {
       var responseJson = this.props.navigation.state.params.responseJson;
-      alert(JSON.stringify(responseJson));
+      //alert(JSON.stringify(responseJson));
       this.setState({
         startLatitude: this.props.navigation.state.params.startLatitude,
         startLongitude: this.props.navigation.state.params.startLongitude,

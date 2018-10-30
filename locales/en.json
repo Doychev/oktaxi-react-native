@@ -22,9 +22,9 @@
 		"signin_link": "Registration",
 		"name": "Names",
 		"email": "Email",
-		"review_save": "Send",
+		"review_save": "Finish your order",
 		"comment": "Comment",
-		"order_completed_review": "Please rate your ride",
+		"order_completed_review": "You can write your comments here",
 		"order_completed": "Your order is completed",
 		"pos_payment": "Taxi equipped with a POS terminal",
 		"order_later": "Deferred order",
@@ -106,5 +106,6 @@
 		"turn_on_internet": "In order to use the application please switch on your Internet connection",
 		"phone_not_valid": "Not a valid phone number",
 		"thank_you_for_order": "Thank you for using the services of OK SUPERTRANS! You are welcome again!",
+		"to_home_screen": "To Home Screen",
 	}
 }

@@ -15,6 +15,7 @@ export default class ReviewScreen extends React.Component {
     super(props);
     this.state = {
       step: 1,
+      reviewText: '',
     };
   }
 
@@ -61,12 +62,19 @@ export default class ReviewScreen extends React.Component {
           {
             this.state.step == 1 ?
             <View style={styles.resultBox}>
-              <Text style={styles.ratingDescription}>{strings('content.order_completed_review')}</Text>
+
+              //<Text style={styles.ratingDescription}>{strings('content.order_completed_review')}</Text>
+              //onChangeText={(value) => this.setState({voucherNumber: value})}
+
+              <TextInput style={styles.ratingDescription} value={this.state.reviewText}
+                onChangeText={(value) => this.setState({reviewText: value})}
+                multiline = {true} numberOfLines={4}
+                returnKeyType='next' autoCapitalize = 'none'></TextInput>
             </View>
             : null
           }
           <TouchableOpacity style={styles.button} onPress={this.state.step == 1 ? this.onPressSend : this.onPressNewOrder}>
-            <Text style={styles.buttonText}>{this.state.step == 1 ? strings('content.review_save') : strings('content.new_order')}</Text>
+            <Text style={styles.buttonText}>{this.state.step == 1 ? strings('content.review_save') : strings('content.to_home_screen')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -106,8 +114,8 @@ const styles = StyleSheet.create({
     color: Colors.ORANGE,
   },
   ratingDescription: {
-    color: Colors.GRAY,
-    fontSize: 14,
+    color: Colors.BLACK,
+    fontSize: 16,
     marginLeft: 5,
     marginRight: 20,
   },

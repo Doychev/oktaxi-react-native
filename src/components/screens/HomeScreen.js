@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
-import { Constants } from '../../Constants.js';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image } from 'react-native';
 import { Colors } from '../../Colors.js';
+import { Constants } from '../../Constants.js';
 import MapView from 'react-native-maps';
 import Toolbar from '../elements/Toolbar';
 import Menu from '../elements/Menu';
@@ -9,7 +9,6 @@ import Permissions from 'react-native-permissions';
 import Geocoder from 'react-native-geocoder';
 Geocoder.fallbackToGoogle(Constants.GOOGLE_MAPS_API_KEY);
 import SideMenu from 'react-native-side-menu';
-import { NetworkUtils } from '../../util/NetworkUtils.js';
 
 import { strings } from '../../../locales/i18n';
 
@@ -22,11 +21,11 @@ export default class HomeScreen extends React.Component {
       mapRegion: {
         latitude: 42.69751,
         longitude: 23.32415,
-        latitudeDelta: 0.012,
-        longitudeDelta: 0.012,
+        //latitudeDelta: 0.012,
+        //longitudeDelta: 0.012,
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
       },
-      currentLatitude: 0,
-      currentLongitude: 0,
       userLatitude: 0,
       userLongitude: 0,
       toolsVisible: true,
@@ -37,7 +36,7 @@ export default class HomeScreen extends React.Component {
     this.onRegionChange = this.onRegionChange.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
   }
-
+  alert(this.state.currentStep);
   onRegionChange(region) {
     this.setState({
       toolsVisible: false,
@@ -46,61 +45,67 @@ export default class HomeScreen extends React.Component {
 
   async onRegionChangeComplete(region) {
     try {
-      let geocoderResult = await Geocoder.geocodePositionWithLanguage({lat: region.latitude, lng: region.longitude}, 'bg');
+      let geocoderResult = await Geocoder.geocodePosition({lat: region.latitude, lng: region.longitude});
       var address = '';
-      if (geocoderResult && geocoderResult[0]) {
-        address = geocoderResult[0].formattedAddress;
-        // if (geocoderResult[0].streetNumber) {
-        //   address = address + " " + geocoderResult[0].streetNumber;
-        // }
+      if (geocoderResult && geocoderResult[0] && geocoderResult[0].streetName) {
+        address = geocoderResult[0].streetName;
+        if (geocoderResult[0].streetNumber) {
+          address = address + " " + geocoderResult[0].streetNumber;
+        }
+        if (geocoderResult[0].neighborhood) {
+          address = address + " " + geocoderResult[0].neighborhood;
+        }
+        //address = address + " " + geocoderResult[0].subLocality;
       }
       this.setState({
         toolsVisible: true,
         currentLocation: address,
-        currentLatitude: region.latitude,
-        currentLongitude: region.longitude,
         //JSON.stringify(geocoderResult[0])
       });
     } catch (e) {
+      // alert(e);
       this.setState({
         toolsVisible: true,
         currentLocation: '',
-        currentLatitude: region.latitude,
-        currentLongitude: region.longitude,
       });
     }
   }
 
   async componentDidMount() {
-    if (!await NetworkUtils.checkForNetwork()) {
-      Alert.alert('', strings('content.turn_on_internet'));
-    }
-
-    this.checkLocationPermission().then( status => {
-      if (status === 'authorized') {
-        this.getUserLocation();
-      } else {
-        this.getLocationPermission().then( status => {
-          if (status === 'authorized') {
-            this.getUserLocation();
-          } else {
-            Alert.alert('', strings('content.turn_on_gps'));
-          }
-        });
-      }
-    });
+    // this.checkLocationPermission().then( status => {
+    //   if (status === 'authorized') {
+    //     this.getUserLocation();
+    //   } else {
+    //     this.getLocationPermission().then( status => {
+    //       if (status === 'authorized') {
+    //         this.getUserLocation();
+    //       } else {
+    //         //rejected
+    //         //show block screen
+    //       }
+    //     });
+    //   }
+    // });
+    this.getUserLocation();
     // this.getUserLocation();
-
   }
-
+  /*
+  if ((this.state.currentStep)&&(this.state.currentStep == 2)) {
+    latDelta: 0.012,
+    longDelta: 0.012,
+  }else{
+    latDelta: 0.005,
+    longDelta: 0.005,
+  }
+*/
   async getUserLocation() {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         this.map.animateToRegion({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          latitudeDelta: 0.12,
-          longitudeDelta: 0.12,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
         });
         this.setState({
           userLatitude: position.coords.latitude,
@@ -118,8 +123,8 @@ export default class HomeScreen extends React.Component {
     this.map.animateToRegion({
       latitude: this.state.userLatitude,
       longitude: this.state.userLongitude,
-      latitudeDelta: 0.12,
-      longitudeDelta: 0.12,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
     });
   }
 
@@ -140,25 +145,32 @@ export default class HomeScreen extends React.Component {
 
   onPressOrder = () => {
     if (this.state.currentStep == 1) {
+      //alert(this.state.userLatitude);
       this.setState({
         pickUpLocationDescription: this.state.currentLocation,
-        pickUpLocationLatitude: this.state.currentLatitude,
-        pickUpLocationLongitude: this.state.currentLongitude,
+        //pickUpLocationLatitude: this.state.mapRegion.latitude,
+        //pickUpLocationLongitude: this.state.mapRegion.longitude,
+        pickUpLocationLatitude: this.state.userLatitude,
+        pickUpLocationLongitude: this.state.userLongitude,
         currentStep: 2,
-        currentLocation: '',
+        currentLocation: "",
       });
-      this.refs.locationBox.focus();
     } else if (this.state.currentStep == 2) {
+      //this.state.currentLocation = "";
       this.props.navigation.navigate('OrderTaxi', {
         pickUpLocationDescription: this.state.pickUpLocationDescription,
         pickUpLocationLatitude: this.state.pickUpLocationLatitude,
         pickUpLocationLongitude: this.state.pickUpLocationLongitude,
+        //dropOffLocationDescription:  "",
         dropOffLocationDescription: this.state.currentLocation,
-        dropOffLocationLatitude: this.state.currentLatitude,
-        dropOffLocationLongitude: this.state.currentLongitude,
+        dropOffLocationLatitude: this.state.mapRegion.latitude,
+        dropOffLocationLongitude: this.state.mapRegion.longitude,
       });
     }
+    //alert(this.state.pickUpLocationLatitude);
   }
+
+
 
   customBackButtonAction = () => {
     this.setState({
@@ -193,8 +205,10 @@ export default class HomeScreen extends React.Component {
           this.map.animateToRegion({
             latitude: geocoderResult[0].position.lat,
             longitude: geocoderResult[0].position.lng,
-            latitudeDelta: 0.12,
-            longitudeDelta: 0.12,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+
+
           });
         }
       }
@@ -227,7 +241,6 @@ export default class HomeScreen extends React.Component {
             onRegionChange={this.onRegionChange}
             onRegionChangeComplete={this.onRegionChangeComplete}
             // provider={MapView.PROVIDER_GOOGLE}
-            //style={StyleSheet.absoluteFill}
             >
           </MapView>
           {
@@ -235,7 +248,6 @@ export default class HomeScreen extends React.Component {
             <TextInput style={styles.currentLocationBox} value={this.state.currentLocation}
               onChangeText={(value) => this.setState({currentLocation: value})}
               returnKeyType='go'
-              ref='locationBox'
               onSubmitEditing={(event) => this.searchAddress()}/>
             : null
           }

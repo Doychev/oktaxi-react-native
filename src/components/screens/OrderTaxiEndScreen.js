@@ -63,6 +63,9 @@ export default class OrderTaxiEndScreen extends React.Component {
   }
 
   onPressNewOrder = () => {
+    this.setState({
+      currentStep: 1,
+    });
     this.props.navigation.navigate('Home');
   }
 
@@ -91,7 +94,7 @@ export default class OrderTaxiEndScreen extends React.Component {
             : null
           }
           <TouchableOpacity style={styles.button} onPress={this.onPressNewOrder}>
-            <Text style={styles.buttonText}>{strings('content.new_order')}</Text>
+            <Text style={styles.buttonText}>{strings('content.to_home_screen')}</Text>
           </TouchableOpacity>
         </View>
       </View>

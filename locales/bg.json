@@ -19,9 +19,9 @@
 		"pos_payment": "Такси с POS терминал",
 		"hello_blank_fragment": "Намерено такси",
 		"order_completed": "Поръчката Ви е изпълнена",
-		"order_completed_review": "Моля оценете Вашето пътуване. Вашето мнение е важно за нас.",
+		"order_completed_review": "Можете да напишете коментар тук",
 		"comment": "Коментар",
-		"review_save": "Изпращане",
+		"review_save": "Приключване на поръчката",
 		"review_trip": "Оцени пътуването",
 		"new_order": "Нова поръчка",
 		"phone": "Телефон",
@@ -107,5 +107,6 @@
 		"order_taken": "Поръчката Ви беше приета от такси",
 		"taxi_is_waiting_at_adress": "Таксито чака на адреса",
 		"taxi_has_picked_you_up": "В таксито сте",
+		"to_home_screen": "Към Начален екран",
 	}
 }

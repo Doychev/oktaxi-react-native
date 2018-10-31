@@ -86,12 +86,6 @@ export default class HomeScreen extends React.Component {
     //     });
     //   }
     // });
-    if (this.props.navigation.state.params && this.props.navigation.state.params.currentStep) {
-      alert(this.props.navigation.state.params.currentStep);
-      this.setState({
-        currentStep: this.props.navigation.state.params.currentStep,
-      });
-    }
     this.getUserLocation();
     // this.getUserLocation();
   }
@@ -163,6 +157,9 @@ export default class HomeScreen extends React.Component {
       });
     } else if (this.state.currentStep == 2) {
       //this.state.currentLocation = "";
+      this.setState({
+        currentStep: 1,
+      });
       this.props.navigation.navigate('OrderTaxi', {
         pickUpLocationDescription: this.state.pickUpLocationDescription,
         pickUpLocationLatitude: this.state.pickUpLocationLatitude,

@@ -16,6 +16,7 @@ export default class ReviewScreen extends React.Component {
     this.state = {
       step: 1,
       reviewText: '',
+      currentRating: 0,
     };
   }
 
@@ -30,6 +31,12 @@ export default class ReviewScreen extends React.Component {
         version: responseJson.version,
       });
     }
+
+    if (this.props.navigation.state.params.orderId) {
+      this.setState({
+        orderId: this.props.navigation.state.params.orderId,
+      });
+    }
   }
 
   showSpinner() {
@@ -40,14 +47,50 @@ export default class ReviewScreen extends React.Component {
     this.setState({ spinnerVisible : false});
   }
 
-  onPressSend = () => {
-    this.setState({
-      step: 2,
-    });
+  onPressSend = async () => {
+    this.showSpinner();
+    let response = await NetworkUtils.fetch(
+       Constants.BASE_URL + "order/" + this.state.orderId + "/review", {
+        method: 'POST',
+        headers: {
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json',
+          'Authorization' : 'Basic ' + this.state.encodedUser,
+        },
+        body: JSON.stringify({
+          "messageId": this.state.orderId,
+          "text": this.state.reviewText,
+          "score": this.state.currentRating,
+        }),
+      }
+    );
+    if (!response.ok) {
+      this.hideSpinner();
+      alert('error');
+    } else {
+      this.hideSpinner();
+      this.setState({
+        step: 2,
+      });
+    }
   }
 
   onPressNewOrder = () => {
     this.props.navigation.navigate('Home');
+  }
+
+  onPressStar = (index) => {
+    this.setState({
+      currentRating: index,
+    });
+  }
+
+  getRatingImage = (index) => {
+    if (index <= this.state.currentRating) {
+      return require('../../images/star_full.png');
+    } else {
+      return require('../../images/star_empty.png');
+    }
   }
 
   render() {
@@ -62,13 +105,26 @@ export default class ReviewScreen extends React.Component {
           {
             this.state.step == 1 ?
             <View style={styles.resultBox}>
-
-              //<Text style={styles.ratingDescription}>{strings('content.order_completed_review')}</Text>
-              //onChangeText={(value) => this.setState({voucherNumber: value})}
-
+              <View style={styles.ratingsRow}>
+                <TouchableOpacity style={styles.starButton} onPress={() => this.onPressStar(1)}>
+                  <Image style={styles.starImage} source={this.getRatingImage(1)}/>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.starButton} onPress={() => this.onPressStar(2)}>
+                  <Image style={styles.starImage} source={this.getRatingImage(2)}/>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.starButton} onPress={() => this.onPressStar(3)}>
+                  <Image style={styles.starImage} source={this.getRatingImage(3)}/>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.starButton} onPress={() => this.onPressStar(4)}>
+                  <Image style={styles.starImage} source={this.getRatingImage(4)}/>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.starButton} onPress={() => this.onPressStar(5)}>
+                  <Image style={styles.starImage} source={this.getRatingImage(5)}/>
+                </TouchableOpacity>
+              </View>
               <TextInput style={styles.ratingDescription} value={this.state.reviewText}
                 onChangeText={(value) => this.setState({reviewText: value})}
-                multiline = {true} numberOfLines={4}
+                multiline = {true} numberOfLines={4} placeholder={strings('content.order_completed_review')}
                 returnKeyType='next' autoCapitalize = 'none'></TextInput>
             </View>
             : null
@@ -134,5 +190,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: Colors.WHITE,
     fontWeight: 'bold',
+  },
+  ratingsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+  },
+  starButton: {
+    flex: 1,
+  },
+  starImage: {
+    width: 50,
+    height: 50,
   },
 });

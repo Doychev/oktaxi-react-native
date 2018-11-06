@@ -163,32 +163,28 @@ export default class HomeScreen extends React.Component {
 
   onPressOrder = () => {
     if (this.state.currentStep == 1) {
-      //alert(this.state.userLatitude);
       this.setState({
         pickUpLocationDescription: this.state.currentLocation,
-        //pickUpLocationLatitude: this.state.mapRegion.latitude,
-        //pickUpLocationLongitude: this.state.mapRegion.longitude,
         pickUpLocationLatitude: this.state.userLatitude,
         pickUpLocationLongitude: this.state.userLongitude,
         currentStep: 2,
         currentLocation: "",
       });
     } else if (this.state.currentStep == 2) {
-      //this.state.currentLocation = "";
+      var temp = this.state.currentLocation;
       this.setState({
         currentStep: 1,
+        currentLocation: '',
       });
       this.props.navigation.navigate('OrderTaxi', {
         pickUpLocationDescription: this.state.pickUpLocationDescription,
         pickUpLocationLatitude: this.state.pickUpLocationLatitude,
         pickUpLocationLongitude: this.state.pickUpLocationLongitude,
-        //dropOffLocationDescription:  "",
-        dropOffLocationDescription: this.state.currentLocation,
+        dropOffLocationDescription: temp,
         dropOffLocationLatitude: this.state.mapRegion.latitude,
         dropOffLocationLongitude: this.state.mapRegion.longitude,
       });
     }
-    //alert(this.state.pickUpLocationLatitude);
   }
 
 

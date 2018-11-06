@@ -5,6 +5,7 @@ import { Constants } from '../../Constants.js';
 import Toolbar from '../elements/Toolbar';
 import CheckBox from 'react-native-checkbox';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
+import { NavigationUtils } from '../../util/NavigationUtils.js';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import { strings } from '../../../locales/i18n';
@@ -63,7 +64,7 @@ export default class OrderTaxiEndScreen extends React.Component {
   }
 
   onPressNewOrder = () => {
-    this.props.navigation.navigate('Home', {currentStep: 1});
+    NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
   }
 
   showSpinner() {

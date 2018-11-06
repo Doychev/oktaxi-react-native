@@ -171,16 +171,11 @@ export default class HomeScreen extends React.Component {
         currentLocation: "",
       });
     } else if (this.state.currentStep == 2) {
-      var temp = this.state.currentLocation;
-      this.setState({
-        currentStep: 1,
-        currentLocation: '',
-      });
       this.props.navigation.navigate('OrderTaxi', {
         pickUpLocationDescription: this.state.pickUpLocationDescription,
         pickUpLocationLatitude: this.state.pickUpLocationLatitude,
         pickUpLocationLongitude: this.state.pickUpLocationLongitude,
-        dropOffLocationDescription: temp,
+        dropOffLocationDescription: this.state.currentLocation,
         dropOffLocationLatitude: this.state.mapRegion.latitude,
         dropOffLocationLongitude: this.state.mapRegion.longitude,
       });

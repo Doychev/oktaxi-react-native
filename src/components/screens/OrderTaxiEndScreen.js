@@ -59,7 +59,7 @@ export default class OrderTaxiEndScreen extends React.Component {
       var responseJson = await response.json();
       responseJson.id = this.state.orderId;
       this.hideSpinner();
-      this.props.navigation.navigate('OrderTaxiResult', {responseJson: responseJson});
+      NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'OrderTaxiResult', {responseJson: responseJson});
     }
   }
 

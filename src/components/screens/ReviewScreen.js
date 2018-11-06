@@ -211,6 +211,8 @@ const styles = StyleSheet.create({
     height: 50,
   },
   reviewMargin: {
+    minHeight: 90,
+    maxHeight: 150,
     marginTop: 10,
   }
 });

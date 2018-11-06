@@ -16,7 +16,7 @@ export default class ReviewScreen extends React.Component {
     this.state = {
       step: 1,
       reviewText: '',
-      currentRating: 0,
+      currentRating: 5,
     };
   }
 
@@ -122,6 +122,12 @@ export default class ReviewScreen extends React.Component {
                   <Image style={styles.starImage} source={this.getRatingImage(5)}/>
                 </TouchableOpacity>
               </View>
+            </View>
+            : null
+          }
+          {
+            this.state.step == 1 ?
+            <View style={[styles.resultBox, styles.reviewMargin]}>
               <TextInput style={styles.ratingDescription} value={this.state.reviewText}
                 onChangeText={(value) => this.setState({reviewText: value})}
                 multiline = {true} numberOfLines={4} placeholder={strings('content.order_completed_review')}
@@ -204,4 +210,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+  reviewMargin: {
+    marginTop: 10,
+  }
 });

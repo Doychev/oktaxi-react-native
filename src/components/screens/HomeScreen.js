@@ -40,6 +40,7 @@ export default class HomeScreen extends React.Component {
   // alert(this.state.currentStep);
   onRegionChange(region) {
     this.setState({
+      mapRegion: region,
       toolsVisible: false,
     });
   }
@@ -165,8 +166,8 @@ export default class HomeScreen extends React.Component {
     if (this.state.currentStep == 1) {
       this.setState({
         pickUpLocationDescription: this.state.currentLocation,
-        pickUpLocationLatitude: this.state.userLatitude,
-        pickUpLocationLongitude: this.state.userLongitude,
+        pickUpLocationLatitude: this.state.mapRegion.latitude,
+        pickUpLocationLongitude: this.state.mapRegion.longitude,
         currentStep: 2,
         currentLocation: "",
       });

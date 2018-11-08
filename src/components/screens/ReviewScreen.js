@@ -4,6 +4,7 @@ import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
 import Toolbar from '../elements/Toolbar';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
+import { NavigationUtils } from '../../util/NavigationUtils.js';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import { strings } from '../../../locales/i18n';
@@ -66,7 +67,7 @@ export default class ReviewScreen extends React.Component {
     );
     if (!response.ok) {
       this.hideSpinner();
-      alert('error');
+      //SHOW ERROR
     } else {
       this.hideSpinner();
       this.setState({
@@ -76,7 +77,7 @@ export default class ReviewScreen extends React.Component {
   }
 
   onPressNewOrder = () => {
-    this.props.navigation.navigate('Home');
+    NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
   }
 
   onPressStar = (index) => {

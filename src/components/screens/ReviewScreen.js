@@ -130,7 +130,7 @@ export default class ReviewScreen extends React.Component {
             <View style={[styles.resultBox, styles.reviewMargin]}>
               <TextInput style={styles.ratingDescription} value={this.state.reviewText}
                 onChangeText={(value) => this.setState({reviewText: value})}
-                multiline = {true} numberOfLines={4} placeholder={strings('content.order_completed_review')}
+                multiline = {true} numberOfLines={3} placeholder={strings('content.order_completed_review')}
                 returnKeyType='next' autoCapitalize = 'none'></TextInput>
             </View>
             : null
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     alignSelf: 'stretch',
-    marginTop: 50,
+    marginTop: 20,
   },
   resultBox: {
     backgroundColor: Colors.WHITE,
@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
     height: 50,
   },
   reviewMargin: {
-    minHeight: 90,
-    maxHeight: 150,
+    minHeight: 70,
+    maxHeight: 100,
     marginTop: 10,
   }
 });

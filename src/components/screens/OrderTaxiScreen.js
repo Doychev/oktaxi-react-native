@@ -6,6 +6,7 @@ import Toolbar from '../elements/Toolbar';
 import CheckBox from 'react-native-checkbox';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
 import Spinner from 'react-native-loading-spinner-overlay';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 import { strings } from '../../../locales/i18n';
 
@@ -14,6 +15,7 @@ export default class OrderTaxiScreen extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       spinnerVisible : false,
       luggageChecked: false,
@@ -26,8 +28,22 @@ export default class OrderTaxiScreen extends React.Component {
       dropOffAddress: this.props.navigation.state.params.dropOffLocationDescription,
       dropOffLocationLatitude: this.props.navigation.state.params.dropOffLocationLatitude,
       dropOffLocationLongitude: this.props.navigation.state.params.dropOffLocationLongitude,
+      isDateTimePickerVisible: false,
+      deferredTime: new Date(new Date().getTime() + 15*60*1000),
+      deferredLimit: new Date(new Date().getTime() + 15*60*1000),
     };
   }
+
+  _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
+
+  _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
+
+  _handleDatePicked = (date) => {
+    this.setState({
+      deferredTime: date,
+    });
+    this._hideDateTimePicker();
+  };
 
   async componentDidMount() {
     const encodedUser = await AsyncStorage.getItem(Constants.ASYNC_STORE_ENCODED_USER);
@@ -61,11 +77,11 @@ export default class OrderTaxiScreen extends React.Component {
     });
   }
 
-//  onCheckDeferred = (checked) => {
-  //  this.setState({
-    //  deferredChecked: !this.state.deferredChecked,
-    //});
-//  }
+ onCheckDeferred = (checked) => {
+   this.setState({
+     deferredChecked: !this.state.deferredChecked,
+   });
+ }
 
   onPressOrder = async () => {
     this.showSpinner();
@@ -97,8 +113,7 @@ export default class OrderTaxiScreen extends React.Component {
           "voucherPayment": this.state.voucherChecked ? 1 : 0,
           "voucherCode": this.state.voucherNumber,
           "fixedStart": this.state.deferredChecked ? 1 : 0,
-          // "fixedStartDate": "2018-06-12 17:30:49",
-          "fixedStartDate": "",
+          "fixedStartDate": this.state.deferredTime,
           "status": 0,
         }),
       }
@@ -108,8 +123,21 @@ export default class OrderTaxiScreen extends React.Component {
       //SHOW ERROR
     } else {
       this.hideSpinner();
-      this.props.navigation.navigate('OrderTaxiResult', {response: response,
-        startLatitude: this.state.pickUpLocationLatitude, startLongitude: this.state.pickUpLocationLongitude});
+      if (this.state.deferredChecked) {
+        var responseJson = await response.json();
+        if (responseJson.errorCode != null) {
+          //todo: handle
+        } else {
+          this.props.navigation.navigate('OrderTaxiEnd', {
+            orderId: responseJson.id,
+            resultText: strings('content.order_fixed_start_date_text'),
+            orderStatus: responseJson.status,
+          });
+        }
+      } else {
+        this.props.navigation.navigate('OrderTaxiResult', {response: response,
+          startLatitude: this.state.pickUpLocationLatitude, startLongitude: this.state.pickUpLocationLongitude});
+      }
     }
   }
 
@@ -119,6 +147,24 @@ export default class OrderTaxiScreen extends React.Component {
 
   hideSpinner() {
     this.setState({ spinnerVisible : false});
+  }
+
+  onPressDeferredDate = () => {
+    this.setState({
+      isDateTimePickerVisible: true,
+    });
+  }
+
+  getDate(date) {
+    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+  }
+
+  getTime(date) {
+    return date.getHours() + ":" + date.getMinutes();
+  }
+
+  getDeferredDateFormatted(date) {
+    return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
   }
 
   render() {
@@ -175,6 +221,31 @@ export default class OrderTaxiScreen extends React.Component {
 
             <CheckBox label={strings('content.order_later')} checked={this.state.deferredChecked}
               containerStyle={styles.checkbox} labelStyle={styles.checkboxLabel} onChange={(checked) => this.onCheckDeferred(checked)} />
+            {
+              this.state.deferredChecked ?
+              <View style={styles.deferredLine}>
+                <TouchableOpacity style={styles.dateButton} onPress={this.onPressDeferredDate}>
+                  <Image style={styles.calendarIcon} resizeMode='contain'
+                    source={require('../../images/icons/calendar_icon.png')}/>
+                  <Text style={styles.dateText}>{this.getDate(this.state.deferredTime)}</Text>
+                  <View style={styles.dateUnderline} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.timeButton} onPress={this.onPressDeferredDate}>
+                  <Image style={styles.calendarIcon} resizeMode='contain'
+                    source={require('../../images/icons/clock_icon.png')}/>
+                  <Text style={styles.dateText}>{this.getTime(this.state.deferredTime)}</Text>
+                  <View style={styles.dateUnderline} />
+                </TouchableOpacity>
+              </View>
+              : null
+            }
+            <DateTimePicker
+              mode='datetime'
+              minimumDate={new Date(this.state.deferredLimit)}
+              isVisible={this.state.isDateTimePickerVisible}
+              onConfirm={this._handleDatePicked}
+              onCancel={this._hideDateTimePicker}
+            />
           </View>
           <TouchableOpacity style={styles.orderButton} onPress={this.onPressOrder}>
             <Text style={styles.buttonText}>{strings('content.order')}</Text>
@@ -219,6 +290,12 @@ const styles = StyleSheet.create({
     marginRight: 20,
     tintColor: Colors.ORANGE,
   },
+  calendarIcon: {
+    width: 35,
+    height: 35,
+    marginRight: 5,
+    tintColor: Colors.GRAY,
+  },
   inputText: {
     width: '80%',
   },
@@ -257,5 +334,37 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     fontWeight: 'bold',
   },
+  deferredLine: {
+    flexDirection: 'row',
+  },
+  dateButton: {
+    flex: 3,
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginRight: 20,
+  },
+  timeButton: {
+    flex: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 20,
+    marginRight: 10,
+  },
+  dateText: {
+    fontSize: 20,
+  },
+  timeText: {
+    fontSize: 20,
+  },
+  dateUnderline: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: 1,
+    backgroundColor: Colors.GRAY,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: -10,
+  }
 
 });

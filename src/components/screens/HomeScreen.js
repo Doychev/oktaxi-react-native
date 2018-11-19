@@ -57,7 +57,9 @@ export default class HomeScreen extends React.Component {
         if (geocoderResult[0].neighborhood) {
           address = address + " " + geocoderResult[0].neighborhood;
         }
-        //address = address + " " + geocoderResult[0].subLocality;
+        if (geocoderResult[0].neighborhood) {
+        address = address + " " + geocoderResult[0].subLocality;
+        }
       }
       this.setState({
         toolsVisible: true,

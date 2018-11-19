@@ -41,7 +41,6 @@ export default class OrdersScreen extends React.Component {
     } else {
       this.hideSpinner();
       let responseText = await response.text();
-      responseText = responseText.replace("null", "");
       // this.setState({
         // debug: 'done',
         // debug: JSON.stringify(responseText),

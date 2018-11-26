@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, Image, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, Image, AsyncStorage, Alert } from 'react-native';
 import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
 import { NavigationUtils } from '../../util/NavigationUtils';
 import { strings } from '../../../locales/i18n';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
 let base64 = require('base-64');
-import Spinner from 'react-native-loading-spinner-overlay';
+import Spinner from './../elements/Spinner';
 import CheckBox from 'react-native-checkbox';
 
 export default class RegistrationScreen extends React.Component {
@@ -48,18 +48,18 @@ export default class RegistrationScreen extends React.Component {
       );
       if (!response.ok) {
         this.hideSpinner();
-        //SHOW ERROR
+        Alert.alert(strings('content.app_name'), strings('content.error_occurred'));
       } else {
         this.hideSpinner();
         var responseJson = await response.json();
         if (responseJson.phoneType == 1) {
-          //not valid
+          Alert.alert(strings('content.app_name'), strings('content.error_occurred'));
         } else if (responseJson.phoneType == 2) {
           this.props.navigation.navigate('Intro', {message: strings('content.login_signin_msg_tel')});
         } else if (responseJson.phoneType == 3) {
           this.props.navigation.navigate('Intro', {message: strings('content.login_signin_msg_tel')});
         } else {
-          //?
+          Alert.alert(strings('content.app_name'), strings('content.error_occurred'));
         }
       }
     }
@@ -86,7 +86,7 @@ export default class RegistrationScreen extends React.Component {
   render() {
     return (
       <ImageBackground style={styles.container} resizeMode='stretch' source={require('../../images/taxi3.png')}>
-        <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
+        <Spinner visible={this.state.spinnerVisible} />
         <View style={styles.top}>
           <Text style={styles.line1}>{strings('content.signin_top_welcome')}</Text>
           <Text style={styles.line2}>{strings('content.company_name')}</Text>

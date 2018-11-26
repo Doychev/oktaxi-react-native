@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, Image, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, Image, AsyncStorage, Alert } from 'react-native';
 import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
 import { NavigationUtils } from '../../util/NavigationUtils';
 import { strings, switchLanguage } from '../../../locales/i18n';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
 let base64 = require('base-64');
-import Spinner from 'react-native-loading-spinner-overlay';
+import Spinner from './../elements/Spinner';
 
 export default class IntroScreen extends React.Component {
   static navigationOptions = { title: 'Intro', header: null };
@@ -49,14 +49,13 @@ export default class IntroScreen extends React.Component {
       );
       if (!response.ok) {
         this.hideSpinner();
-        //SHOW ERROR
+        Alert.alert(strings('content.app_name'), strings('content.login_error'));
       } else {
         this.hideSpinner();
         await AsyncStorage.setItem(Constants.ASYNC_STORE_ENCODED_USER, encodedUser);
         await AsyncStorage.setItem(Constants.ASYNC_STORE_USERNAME, this.state.username);
         await AsyncStorage.setItem(Constants.ASYNC_STORE_USER_INFO, JSON.stringify(await response.json()));
-        // NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
-        this.props.navigation.navigate('Home');
+        NavigationUtils.navigateWithoutBackstack(this.props.navigation, 'Home');
       }
     }
   }
@@ -80,7 +79,7 @@ export default class IntroScreen extends React.Component {
   render() {
     return (
       <ImageBackground style={styles.container} resizeMode='stretch' source={require('../../images/taxi3.png')}>
-        <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
+        <Spinner visible={this.state.spinnerVisible} />
         {
           this.props.navigation.state.params && this.props.navigation.state.params.message ?
           <View style={styles.messageBox}>

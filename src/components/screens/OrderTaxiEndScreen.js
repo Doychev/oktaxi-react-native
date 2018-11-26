@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image, AsyncStorage, Alert } from 'react-native';
 import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
 import Toolbar from '../elements/Toolbar';
 import CheckBox from 'react-native-checkbox';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
 import { NavigationUtils } from '../../util/NavigationUtils.js';
-import Spinner from 'react-native-loading-spinner-overlay';
+import Spinner from './../elements/Spinner';
 
 import { strings } from '../../../locales/i18n';
 
@@ -54,7 +54,7 @@ export default class OrderTaxiEndScreen extends React.Component {
     );
     if (!response.ok) {
       this.hideSpinner();
-      //SHOW ERROR
+      Alert.alert(strings('content.app_name'), strings('content.error_occurred'));
     } else {
       var responseJson = await response.json();
       responseJson.id = this.state.orderId;
@@ -78,7 +78,7 @@ export default class OrderTaxiEndScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
+        <Spinner visible={this.state.spinnerVisible} />
         <Toolbar title={strings('content.activity_title_confirm')} navigation={this.props.navigation}/>
         <View style={styles.content}>
           <View style={styles.resultBox}>

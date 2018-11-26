@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, Image, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground, Image, AsyncStorage, Alert } from 'react-native';
 import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
 import { NavigationUtils } from '../../util/NavigationUtils';
 import { strings } from '../../../locales/i18n';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
 let base64 = require('base-64');
-import Spinner from 'react-native-loading-spinner-overlay';
+import Spinner from './../elements/Spinner';
 
 export default class ForgottenPasswordScreen extends React.Component {
   static navigationOptions = { title: 'ForgottenPassword', header: null };
@@ -45,7 +45,7 @@ export default class ForgottenPasswordScreen extends React.Component {
       let responseText = await response.text();
       if (!response.ok) {
         this.hideSpinner();
-        //SHOW ERROR
+        Alert.alert(strings('content.app_name'), strings('content.error_occurred'));
       } else {
         this.hideSpinner();
         this.props.navigation.navigate('Intro', {message: strings('content.login_forgotten_password_msg_tel')});
@@ -68,7 +68,7 @@ export default class ForgottenPasswordScreen extends React.Component {
   render() {
     return (
       <ImageBackground style={styles.container} resizeMode='stretch' source={require('../../images/taxi3.png')}>
-        <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
+        <Spinner visible={this.state.spinnerVisible} />
         <View style={styles.top}>
           <Text style={styles.line1}>{strings('content.fogotten_password_top')}</Text>
           <Text style={styles.line2}>{strings('content.company_name')}</Text>

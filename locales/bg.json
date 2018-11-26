@@ -108,5 +108,6 @@
 		"taxi_is_waiting_at_adress": "Таксито чака на адреса",
 		"taxi_has_picked_you_up": "В таксито сте",
 		"to_home_screen": "Към Начален екран",
+		"error_occurred": "Възникна грешка.",
 	}
 }

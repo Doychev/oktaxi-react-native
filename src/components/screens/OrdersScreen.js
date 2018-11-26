@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, AsyncStorage, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, AsyncStorage, ScrollView, Alert } from 'react-native';
 import { Colors } from '../../Colors.js';
 import { Constants } from '../../Constants.js';
 import { strings } from '../../../locales/i18n';
 import Toolbar from '../elements/Toolbar';
-import Spinner from 'react-native-loading-spinner-overlay';
+import Spinner from './../elements/Spinner';
 import { NetworkUtils } from '../../util/NetworkUtils.js';
 
 export default class OrdersScreen extends React.Component {
@@ -37,14 +37,10 @@ export default class OrdersScreen extends React.Component {
     );
     if (!response.ok) {
       this.hideSpinner();
-      //SHOW ERROR
+      Alert.alert(strings('content.app_name'), strings('content.error_occurred'));
     } else {
       this.hideSpinner();
       let responseText = await response.text();
-      // this.setState({
-        // debug: 'done',
-        // debug: JSON.stringify(responseText),
-      // });
       this.setState({
         orders: JSON.parse(responseText),
       });
@@ -84,7 +80,7 @@ export default class OrdersScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Spinner visible={this.state.spinnerVisible} animation='fade' textContent={strings('content.please_wait')} overlayColor={Colors.OVERLAY} textStyle={{color: '#FFF'}}/>
+        <Spinner visible={this.state.spinnerVisible} />
         <Toolbar showBackButton={true} title={strings('content.my_orders')} navigation={this.props.navigation}/>
         <ScrollView style={styles.content}>
           {
